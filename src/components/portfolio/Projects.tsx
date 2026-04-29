@@ -14,7 +14,7 @@ const projects = [
       "Shared workspaces (rooms)",
     ],
     tech: ["React", "TypeScript", "Node.js", "WebSockets", "Tailwind", "Stripe"],
-    live: "https://nextsynic.lovable.app/",
+    live: "https://realtime-collab-app-six.vercel.app/",
     github: null,
     accent: "from-primary/40 via-accent-cyan/30 to-primary-glow/30",
     featured: true,
@@ -31,12 +31,12 @@ const projects = [
     accent: "from-primary/30 to-primary-glow/20",
   },
   {
-    title: "Project Spark AI",
+    title: "SCOPELAB",
     description:
       "Helps people turn a vague idea into an actual project plan instead of staring at a blank page.",
     features: ["AI-generated workflows", "Task breakdown", "Clean planning UI"],
     tech: ["Next.js", "TypeScript", "REST APIs"],
-    live: "https://project-spark-ai-80.lovable.app/",
+    live: "https://scopelab.vercel.app/",
     github: null,
     accent: "from-accent-cyan/30 to-primary/20",
   },
