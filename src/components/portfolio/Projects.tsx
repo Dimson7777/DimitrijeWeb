@@ -60,6 +60,21 @@ const projects = [
     github: "https://github.com/Dimson7777/synapse-dev-network",
     accent: "from-primary/30 to-accent-cyan/20",
   },
+  {
+    title: "Briefly — SaaS Workspace Platform",
+    description:
+      "A SaaS workspace platform focused on secure authentication, session management, and production-ready deployment.",
+    features: [
+      "Full auth via Supabase",
+      "Secure session management",
+      "Production-ready architecture",
+    ],
+    tech: ["React", "TypeScript", "Supabase", "Netlify"],
+    live: "https://briefly-app1.netlify.app",
+    github: null,
+    accent: "from-accent-cyan/40 via-primary/20 to-primary-glow/25",
+    badge: "SaaS · Auth Platform",
+  },
 ];
 
 export const Projects = () => (
