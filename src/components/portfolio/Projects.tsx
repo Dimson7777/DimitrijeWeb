@@ -41,22 +41,22 @@ const projects = [
     accent: "from-accent-cyan/30 to-primary/20",
   },
   {
-    title: "Sculpt Stack Store",
+    title: "SculptCommerce",
     description:
       "A small e-commerce storefront built to practice product layouts, cart flow, and responsive design.",
     features: ["Product catalog", "Responsive UI", "Clean checkout flow"],
     tech: ["React", "TypeScript", "CSS", "Node.js"],
-    live: "https://sculpt-stack-store.lovable.app/",
+    live: "https://sculpt-commerce.vercel.app/",
     github: null,
     accent: "from-primary-glow/30 to-accent-cyan/20",
   },
   {
-    title: "DevCircle",
+    title: "SYNAPSE — Developer Platform",
     description:
       "A small social network for developers — built to learn how feeds, follows, and real data models work end-to-end.",
     features: ["Profiles & follows", "Posts & comments", "Dynamic feed", "Auth"],
     tech: ["React", "TypeScript", "Supabase", "PostgreSQL"],
-    live: "https://synapse-dev-network.lovable.app/",
+    live: "https://synapse-dev-network1.vercel.app/",
     github: "https://github.com/Dimson7777/synapse-dev-network",
     accent: "from-primary/30 to-accent-cyan/20",
   },
