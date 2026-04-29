@@ -65,7 +65,7 @@ export const FeaturedProject = () => (
 
             <div className="flex flex-wrap gap-3">
               <a
-                href="https://invoiceflow-play.lovable.app/"
+                href="https://invoiceflow-saas-mu.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-primary to-primary-glow text-primary-foreground font-medium text-sm shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.6)] hover:-translate-y-0.5 transition-all"

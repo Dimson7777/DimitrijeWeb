@@ -26,7 +26,7 @@ const projects = [
       "SaaS that helps freelancers and small teams send invoices and get paid without juggling spreadsheets.",
     features: ["Auth & user accounts", "Client management", "Stripe subscriptions", "Dashboard & analytics"],
     tech: ["React", "TypeScript", "Supabase", "PostgreSQL", "Stripe"],
-    live: "https://invoiceflow-play.lovable.app/",
+    live: "https://invoiceflow-saas-mu.vercel.app/",
     github: null,
     accent: "from-primary/30 to-primary-glow/20",
   },
