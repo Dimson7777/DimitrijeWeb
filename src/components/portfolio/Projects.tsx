@@ -75,6 +75,21 @@ const projects = [
     accent: "from-accent-cyan/40 via-primary/20 to-primary-glow/25",
     badge: "SaaS · Auth Platform",
   },
+  {
+    title: "DevPitch Pro",
+    description:
+      "A developer-focused SaaS tool that transforms raw project notes into CV-ready summaries, LinkedIn posts, and interview answers.",
+    features: [
+      "AI-powered pitch generation",
+      "CV, LinkedIn, and interview formatting",
+      "Real-time transformation preview",
+      "Clean and fast UX",
+    ],
+    tech: ["React", "TypeScript", "Node.js", "AI Integration"],
+    live: "https://devpitch-rho.vercel.app",
+    github: null,
+    accent: "from-primary/30 to-accent-cyan/20",
+  },
 ];
 
 export const Projects = () => (
