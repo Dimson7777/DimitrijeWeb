@@ -6,7 +6,11 @@ const roles = [
     company: "TokenFlow",
     role: "Full Stack Engineer",
     period: "Jan 2025 – Present",
+    logo: undefined as string | undefined,
+    image: "/tokenflow-banner.png" as string | undefined,
+    imageAlt: "TokenFlow smart contract development preview",
     points: [
+      "Led the design and development of complex smart contract systems for 15+ different web3 protocols, achieving high standards in performance and security.",
       "End-to-end development across frontend, backend, and database layers",
       "Designed secure API workflows with role-based access control",
       "Built scalable architecture for production systems serving real users",
@@ -16,6 +20,9 @@ const roles = [
     company: "Freelance / Personal Clients",
     role: "Independent Engineer",
     period: "Ongoing",
+    logo: undefined as string | undefined,
+    image: "/freelancer-banner.png" as string | undefined,
+    imageAlt: "Freelancer platform logo",
     points: [
       "Delivered applications from idea to launch with full ownership",
       "Worked directly with clients on scope, design, and delivery",
@@ -60,6 +67,24 @@ export const Experience = () => (
                     </li>
                   ))}
                 </ul>
+                {r.image && (
+                  <div className="mt-5 pt-5 border-t border-border/50">
+                    <div
+                      className="relative w-full rounded-xl overflow-hidden border border-primary/20"
+                      style={{
+                        boxShadow: "0 0 0 1px hsl(190 95% 55% / 0.08), 0 8px 32px rgba(0,0,0,0.5), 0 0 48px hsl(250 90% 66% / 0.12)",
+                      }}
+                    >
+                      <img
+                        src={r.image}
+                        alt={r.imageAlt}
+                        className="w-full h-auto block"
+                        style={{ display: "block" }}
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}
