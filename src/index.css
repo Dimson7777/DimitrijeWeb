@@ -122,4 +122,124 @@
     background-size: 60px 60px;
     mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
   }
+
+  .hero-bg {
+    z-index: 0;
+  }
+
+  .hero-bg-glow {
+    position: absolute;
+    inset: 10% 20% auto 6%;
+    width: min(52rem, 86vw);
+    height: 26rem;
+    background:
+      radial-gradient(circle at 36% 46%, hsl(250 90% 66% / 0.2), transparent 52%),
+      radial-gradient(circle at 62% 52%, hsl(270 95% 70% / 0.14), transparent 56%),
+      radial-gradient(circle at 46% 38%, hsl(190 95% 55% / 0.09), transparent 48%);
+    filter: blur(14px);
+  }
+
+  .hero-parallax-layer {
+    transform: translate3d(
+      calc(var(--hero-parallax-x, 0px) * 0.5),
+      calc(var(--hero-parallax-y, 0px) * 0.5),
+      0
+    );
+    will-change: transform;
+  }
+
+  .hero-particles {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-particle {
+    position: absolute;
+    border-radius: 9999px;
+    background: radial-gradient(circle, hsl(var(--foreground) / 0.95), hsl(var(--accent-cyan) / 0.35));
+    box-shadow:
+      0 0 10px hsl(var(--foreground) / 0.25),
+      0 0 20px hsl(var(--primary) / 0.2);
+    animation: hero-twinkle var(--dur, 9s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+
+  .hero-shooting-star {
+    position: absolute;
+    top: 18%;
+    left: -12%;
+    width: 130px;
+    height: 1px;
+    opacity: 0;
+    background: linear-gradient(90deg, hsl(var(--foreground) / 0), hsl(var(--foreground) / 0.85));
+    box-shadow: 0 0 14px hsl(var(--foreground) / 0.35);
+    transform: rotate(-18deg);
+    animation: hero-shooting-star 20s linear infinite;
+  }
+}
+
+@keyframes hero-twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.9);
+  }
+  35% {
+    opacity: 0.42;
+    transform: scale(1);
+  }
+  65% {
+    opacity: 0.25;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes hero-shooting-star {
+  0%,
+  72% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-18deg);
+  }
+  74% {
+    opacity: 0.7;
+  }
+  84% {
+    opacity: 0;
+    transform: translate3d(120vw, 28vh, 0) rotate(-18deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(120vw, 28vh, 0) rotate(-18deg);
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-parallax-layer {
+    transform: none;
+  }
+
+  .hero-particle:nth-child(n + 9) {
+    display: none;
+  }
+
+  .hero-bg-glow {
+    filter: blur(18px);
+    opacity: 0.8;
+  }
+
+  .hero-shooting-star {
+    animation-duration: 26s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-parallax-layer {
+    transform: none !important;
+  }
+
+  .hero-particle,
+  .hero-shooting-star {
+    animation: none;
+    opacity: 0.22;
+  }
 }

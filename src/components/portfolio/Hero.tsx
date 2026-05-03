@@ -1,15 +1,97 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ExternalLink, Github, Linkedin, Mail } from "lucide-react";
 import profile from "@/assets/profile.png";
 
-export const Hero = () => {
-  return (
-    <section id="home" className="relative pt-36 md:pt-44 pb-20 md:pb-32 overflow-hidden">
-      <div className="absolute inset-0 grid-bg pointer-events-none" />
-      <div className="absolute top-1/3 -left-32 w-[480px] h-[480px] bg-primary/20 rounded-full blur-[120px] animate-glow-pulse pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[420px] h-[420px] bg-accent-cyan/10 rounded-full blur-[120px] pointer-events-none" />
+const PARTICLES = [
+  { top: "12%", left: "8%", size: "3px", delay: "0s", duration: "8s", opacity: 0.45 },
+  { top: "22%", left: "20%", size: "2px", delay: "1.8s", duration: "9.5s", opacity: 0.35 },
+  { top: "16%", left: "38%", size: "2px", delay: "0.8s", duration: "7.5s", opacity: 0.4 },
+  { top: "30%", left: "55%", size: "3px", delay: "2.2s", duration: "10s", opacity: 0.45 },
+  { top: "18%", left: "72%", size: "2px", delay: "1.2s", duration: "8.2s", opacity: 0.35 },
+  { top: "10%", left: "88%", size: "2px", delay: "2.8s", duration: "9s", opacity: 0.3 },
+  { top: "44%", left: "12%", size: "2px", delay: "1s", duration: "10.5s", opacity: 0.3 },
+  { top: "50%", left: "30%", size: "3px", delay: "3.1s", duration: "8.8s", opacity: 0.42 },
+  { top: "58%", left: "48%", size: "2px", delay: "2.4s", duration: "9.2s", opacity: 0.33 },
+  { top: "46%", left: "66%", size: "2px", delay: "0.4s", duration: "8.4s", opacity: 0.3 },
+  { top: "62%", left: "82%", size: "3px", delay: "3.3s", duration: "10.8s", opacity: 0.4 },
+  { top: "72%", left: "22%", size: "2px", delay: "1.6s", duration: "9.8s", opacity: 0.28 },
+  { top: "76%", left: "58%", size: "2px", delay: "2.1s", duration: "8.7s", opacity: 0.3 },
+  { top: "68%", left: "92%", size: "2px", delay: "3s", duration: "9.4s", opacity: 0.25 },
+];
 
-      <div className="container relative">
+export const Hero = () => {
+  const [parallax, setParallax] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const finePointer = window.matchMedia("(pointer: fine)");
+
+    if (reduceMotion.matches || !desktop.matches || !finePointer.matches) {
+      return;
+    }
+
+    let frame = 0;
+
+    const onMouseMove = (event: MouseEvent) => {
+      const x = (event.clientX / window.innerWidth - 0.5) * 10;
+      const y = (event.clientY / window.innerHeight - 0.5) * 8;
+
+      cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        setParallax({ x, y });
+      });
+    };
+
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("mousemove", onMouseMove);
+    };
+  }, []);
+
+  return (
+    <section
+      id="home"
+      className="relative pt-36 md:pt-44 pb-20 md:pb-32 overflow-hidden"
+      style={
+        {
+          "--hero-parallax-x": `${parallax.x}px`,
+          "--hero-parallax-y": `${parallax.y}px`,
+        } as React.CSSProperties
+      }
+    >
+      <div className="hero-bg absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="hero-bg-glow hero-parallax-layer" />
+        <div className="hero-particles hero-parallax-layer">
+          {PARTICLES.map((particle, index) => (
+            <span
+              key={index}
+              className="hero-particle"
+              style={
+                {
+                  top: particle.top,
+                  left: particle.left,
+                  width: particle.size,
+                  height: particle.size,
+                  opacity: particle.opacity,
+                  "--delay": particle.delay,
+                  "--dur": particle.duration,
+                } as React.CSSProperties
+              }
+            />
+          ))}
+        </div>
+        <div className="hero-shooting-star hero-parallax-layer" />
+      </div>
+
+      <div className="absolute inset-0 grid-bg pointer-events-none" />
+      <div className="hero-parallax-layer absolute top-1/3 -left-32 w-[480px] h-[480px] bg-primary/20 rounded-full blur-[120px] animate-glow-pulse pointer-events-none" />
+      <div className="hero-parallax-layer absolute bottom-0 right-0 w-[420px] h-[420px] bg-accent-cyan/10 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="container relative z-10">
         <div className="grid lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
