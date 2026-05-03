@@ -6,7 +6,7 @@ const projects = [
   {
     title: "Sync",
     description:
-      "A real-time collaboration platform with shared workspaces, live cursors, chat, and multi-user synchronization.",
+      "A real-time collaboration platform enabling teams to work together through shared workspaces, live cursors, chat, and multi-user synchronization.\n\nBuilt with real-time architecture to support presence tracking and interactive collaboration features.",
     features: [
       "Live cursors & presence",
       "Chat with reactions",
@@ -23,7 +23,7 @@ const projects = [
   {
     title: "InvoiceFlow",
     description:
-      "SaaS that helps freelancers and small teams send invoices and get paid without juggling spreadsheets.",
+      "A production-ready SaaS platform for freelancers and small teams to manage invoices, clients, and subscription-based billing.\n\nBuilt end-to-end with secure authentication, Stripe integration, and scalable backend workflows.",
     features: ["Auth & user accounts", "Client management", "Stripe subscriptions", "Dashboard & analytics"],
     tech: ["React", "TypeScript", "Supabase", "PostgreSQL", "Stripe"],
     live: "https://invoiceflow-saas-mu.vercel.app/",
@@ -33,7 +33,7 @@ const projects = [
   {
     title: "SCOPELAB",
     description:
-      "Helps people turn a vague idea into an actual project plan instead of staring at a blank page.",
+      "A productivity-focused platform that transforms ideas into structured project plans and actionable workflows.\n\nDesigned to help users move from concept to execution with clear task organization and intuitive planning UI.",
     features: ["AI-generated workflows", "Task breakdown", "Clean planning UI"],
     tech: ["Next.js", "TypeScript", "REST APIs"],
     live: "https://scopelab.vercel.app/",
@@ -43,8 +43,8 @@ const projects = [
   {
     title: "SculptCommerce",
     description:
-      "A small e-commerce storefront built to practice product layouts, cart flow, and responsive design.",
-    features: ["Product catalog", "Responsive UI", "Clean checkout flow"],
+      "A modern e-commerce platform focused on product discovery, user experience, and seamless checkout flows.\n\nImplements a full shopping experience including product catalog, cart system, and responsive UI optimized for real-world use.",
+    features: ["Product catalog", "Cart & checkout flow", "Responsive storefront UI"],
     tech: ["React", "TypeScript", "CSS", "Node.js"],
     live: "https://sculpt-commerce.vercel.app/",
     github: null,
@@ -53,8 +53,8 @@ const projects = [
   {
     title: "SYNAPSE — Developer Platform",
     description:
-      "A small social network for developers — built to learn how feeds, follows, and real data models work end-to-end.",
-    features: ["Profiles & follows", "Posts & comments", "Dynamic feed", "Auth"],
+      "A developer-focused platform for building connections, sharing knowledge, and interacting through dynamic feeds and discussions.\n\nDesigned as a full-stack application with user profiles, content feeds, and structured relational data models.",
+    features: ["User profiles & follow system", "Dynamic content feed", "Posts & comments", "Authentication & data relationships"],
     tech: ["React", "TypeScript", "Supabase", "PostgreSQL"],
     live: "https://synapse-dev-network1.vercel.app/",
     github: "https://github.com/Dimson7777/synapse-dev-network",
@@ -63,7 +63,7 @@ const projects = [
   {
     title: "Briefly — SaaS Workspace Platform",
     description:
-      "A SaaS workspace platform focused on secure authentication, session management, and production-ready deployment.",
+      "A SaaS workspace platform designed for secure authentication, session management, and production-ready deployment.\n\nBuilt with a focus on scalability, reliability, and clean architecture across environments.",
     features: [
       "Full auth via Supabase",
       "Secure session management",
@@ -78,7 +78,7 @@ const projects = [
   {
     title: "DevPitch Pro",
     description:
-      "A developer-focused SaaS tool that transforms raw project notes into CV-ready summaries, LinkedIn posts, and interview answers.",
+      "A developer-focused SaaS tool that transforms raw project ideas into structured, professional outputs such as CV summaries, LinkedIn posts, and interview answers.\n\nCombines AI-powered generation with real-time preview and fast, user-friendly workflows.",
     features: [
       "AI-powered pitch generation",
       "CV, LinkedIn, and interview formatting",

@@ -2,18 +2,55 @@ import { motion } from "framer-motion";
 import { SectionHeading } from "./SectionHeading";
 
 const groups = [
-  { title: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind CSS"] },
-  { title: "Backend", items: ["Node.js", "Express", "REST APIs", "Authentication"] },
-  { title: "Data", items: ["Supabase", "PostgreSQL", "Stripe API"] },
-  { title: "Workflow", items: ["Git", "GitHub", "Debugging", "Clean Architecture"] },
+  {
+    title: "Frontend",
+    items: [
+      "React (component architecture & hooks)",
+      "Next.js (SSR, routing, performance)",
+      "TypeScript (type-safe applications)",
+      "Tailwind CSS (responsive UI systems)",
+      "State management & data fetching",
+    ],
+  },
+  {
+    title: "Backend",
+    items: [
+      "Node.js (production-grade applications)",
+      "Express.js (API architecture & middleware)",
+      "RESTful API design & integration",
+      "Authentication & Authorization",
+      "API security & validation",
+    ],
+  },
+  {
+    title: "Data & Integrations",
+    items: [
+      "Supabase (auth, database, real-time)",
+      "PostgreSQL (data modeling & queries)",
+      "Stripe API (payments & subscriptions)",
+      "Third-party API integrations",
+      "Environment configuration",
+    ],
+  },
+  {
+    title: "Workflow",
+    items: [
+      "Git & GitHub (version control)",
+      "Vercel deployment",
+      "Debugging & error handling",
+      "Performance optimization",
+      "Clean architecture & problem solving",
+    ],
+  },
 ];
 
 export const Skills = () => (
   <section id="skills" className="py-20 md:py-28">
     <div className="container">
       <SectionHeading
-        eyebrow="Skills"
-        title={<>The <span className="text-gradient-primary">stack</span> I work in.</>}
+        eyebrow="SKILLS"
+        title={<>The <span className="text-gradient-primary">stack</span> I build with.</>}
+        description="Technologies I use to build scalable, production-ready applications."
       />
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {groups.map((g, i) => (
