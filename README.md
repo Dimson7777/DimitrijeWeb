@@ -80,7 +80,7 @@ npm run dev
 ---
 
 ## 🌐 Live Demo
-https://dimitrijeswebsite.lovable.app/
+https://dimitrije-web.vercel.app/
 
 
 ---
