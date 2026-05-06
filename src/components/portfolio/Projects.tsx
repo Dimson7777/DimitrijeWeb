@@ -21,6 +21,23 @@ const projects = [
     badge: "Featured · Real-time app",
   },
   {
+    title: "Nexus",
+    description:
+      "A modern multi-tenant SaaS platform built for authentication, billing workflows, role-based access control, and real-time workspace management.\n\nDesigned with a premium command-center inspired experience focused on scalability, collaboration, and operational visibility.",
+    features: [
+      "Multi-tenant workspaces",
+      "Role-based access control",
+      "Stripe billing integration",
+      "Real-time activity timeline",
+    ],
+    tech: ["React", "TypeScript", "Supabase", "Stripe", "Tailwind", "Vite"],
+    live: "https://multi-talent-saas.vercel.app/",
+    github: null,
+    accent: "from-accent-cyan/40 via-primary/30 to-primary-glow/30",
+    featured: true,
+    badge: "Featured · SaaS Platform",
+  },
+  {
     title: "InvoiceFlow",
     description:
       "A production-ready SaaS platform for freelancers and small teams to manage invoices, clients, and subscription-based billing.\n\nBuilt end-to-end with secure authentication, Stripe integration, and scalable backend workflows.",
