@@ -18,7 +18,7 @@ export const Contact = () => {
         <SectionHeading
           eyebrow="Contact"
           title={<>Let's talk about <span className="text-gradient-primary">what you're building.</span></>}
-          description="Open to junior full stack roles and freelance work. I usually respond within 24 hours."
+          description="Available for remote full-stack engineering roles and freelance product work. I usually respond within 24 hours."
         />
 
         <ContactForm />

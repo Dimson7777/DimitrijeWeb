@@ -6,7 +6,7 @@ const projects = [
   {
     title: "Sync",
     description:
-      "A real-time collaboration platform enabling teams to work together through shared workspaces, live cursors, chat, and multi-user synchronization.\n\nBuilt with real-time architecture to support presence tracking and interactive collaboration features.",
+      "A real-time collaboration platform built for shared workspaces, live presence, and low-friction team communication. Delivered multi-user synchronization flows with responsive UI behavior across devices.",
     features: [
       "Live cursors & presence",
       "Chat with reactions",
@@ -23,7 +23,7 @@ const projects = [
   {
     title: "Nexus",
     description:
-      "A modern multi-tenant SaaS platform built for authentication, billing workflows, role-based access control, and real-time workspace management.\n\nDesigned with a premium command-center inspired experience focused on scalability, collaboration, and operational visibility.",
+      "A multi-tenant SaaS platform focused on authentication, role-based access, Stripe billing, and real-time workspace activity. Built around scalable product flows with clear access boundaries and reliable session behavior.",
     features: [
       "Multi-tenant workspaces",
       "Role-based access control",
@@ -40,7 +40,7 @@ const projects = [
   {
     title: "InvoiceFlow",
     description:
-      "A production-ready SaaS platform for freelancers and small teams to manage invoices, clients, and subscription-based billing.\n\nBuilt end-to-end with secure authentication, Stripe integration, and scalable backend workflows.",
+      "A production-ready SaaS product for invoice and client lifecycle management with subscription billing. Implemented secure authentication, Stripe payment workflows, and dashboard views for daily operations.",
     features: ["Auth & user accounts", "Client management", "Stripe subscriptions", "Dashboard & analytics"],
     tech: ["React", "TypeScript", "Supabase", "PostgreSQL", "Stripe"],
     live: "https://invoiceflow-saas-mu.vercel.app/",
@@ -50,7 +50,7 @@ const projects = [
   {
     title: "SCOPELAB",
     description:
-      "A productivity-focused platform that transforms ideas into structured project plans and actionable workflows.\n\nDesigned to help users move from concept to execution with clear task organization and intuitive planning UI.",
+      "A planning workspace that converts early ideas into structured execution steps. Built fast interaction loops, clear data flow, and an interface that keeps planning practical for real projects.",
     features: ["AI-generated workflows", "Task breakdown", "Clean planning UI"],
     tech: ["Next.js", "TypeScript", "REST APIs"],
     live: "https://scopelab.vercel.app/",
@@ -60,7 +60,7 @@ const projects = [
   {
     title: "SculptCommerce",
     description:
-      "A modern e-commerce platform focused on product discovery, user experience, and seamless checkout flows.\n\nImplements a full shopping experience including product catalog, cart system, and responsive UI optimized for real-world use.",
+      "An e-commerce application covering catalog browsing, cart behavior, and checkout progression. Focused on responsive storefront UX, predictable state transitions, and maintainable frontend structure.",
     features: ["Product catalog", "Cart & checkout flow", "Responsive storefront UI"],
     tech: ["React", "TypeScript", "CSS", "Node.js"],
     live: "https://sculpt-commerce.vercel.app/",
@@ -68,9 +68,9 @@ const projects = [
     accent: "from-primary-glow/30 to-accent-cyan/20",
   },
   {
-    title: "SYNAPSE — Developer Platform",
+    title: "SYNAPSE - Engineering Platform",
     description:
-      "A developer-focused platform for building connections, sharing knowledge, and interacting through dynamic feeds and discussions.\n\nDesigned as a full-stack application with user profiles, content feeds, and structured relational data models.",
+      "A community platform for engineering teams to share updates, discussions, and practical knowledge. Built as a full-stack system with authentication, structured relational data, and feed-driven interaction flows.",
     features: ["User profiles & follow system", "Dynamic content feed", "Posts & comments", "Authentication & data relationships"],
     tech: ["React", "TypeScript", "Supabase", "PostgreSQL"],
     live: "https://synapse-dev-network1.vercel.app/",
@@ -80,7 +80,7 @@ const projects = [
   {
     title: "Briefly — SaaS Workspace Platform",
     description:
-      "A SaaS workspace platform designed for secure authentication, session management, and production-ready deployment.\n\nBuilt with a focus on scalability, reliability, and clean architecture across environments.",
+      "A SaaS workspace application centered on secure authentication, session handling, and stable deployment workflows. Structured for maintainability and predictable behavior across production environments.",
     features: [
       "Full auth via Supabase",
       "Secure session management",
@@ -95,7 +95,7 @@ const projects = [
   {
     title: "DevPitch Pro",
     description:
-      "A developer-focused SaaS tool that transforms raw project ideas into structured, professional outputs such as CV summaries, LinkedIn posts, and interview answers.\n\nCombines AI-powered generation with real-time preview and fast, user-friendly workflows.",
+      "A SaaS writing workspace that turns raw project input into structured professional outputs. Integrated AI-assisted generation with real-time preview and fast editing loops for practical delivery.",
     features: [
       "AI-powered pitch generation",
       "CV, LinkedIn, and interview formatting",

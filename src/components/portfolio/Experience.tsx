@@ -5,31 +5,37 @@ const roles = [
   {
     company: "TokenFlow",
     role: "Full Stack Engineer",
-    period: "Jan 2025 – Present",
-    logo: undefined as string | undefined,
-    image: "/tokenflow-banner.png" as string | undefined,
-    imageAlt: "TokenFlow smart contract development preview",
+    period: "Jan 2025 - Present",
+    description:
+      "Designed and delivered production-ready full-stack features across frontend, backend, and database layers. Implemented secure authentication, role-based access control, API-driven workflows, and scalable product architecture.",
     points: [
-      "Led end-to-end development of core product features across frontend, backend, and database layers, delivering scalable and production-ready systems",
-      "Designed and implemented secure authentication, role-based access control, and API-driven workflows, ensuring reliable and maintainable product architecture",
-      "Improved application performance through database query optimization and indexing strategies",
-      "Increased development efficiency by introducing modular architecture and reusable components, enabling faster feature delivery",
-      "Contributed to system design decisions and long-term architecture, supporting scalability and future product growth",
+      "Production feature ownership from UI through API and database",
+      "Authentication and role-based access flows for protected product areas",
+      "Scalable architecture decisions supporting long-term product growth",
     ],
   },
   {
-    company: "Freelancer / Personal Clients",
+    company: "ScaleRoad LLC",
     role: "Full Stack Engineer",
-    period: "Feb 2023 – Jan 2025",
-    logo: undefined as string | undefined,
-    image: "/freelancer-banner.png" as string | undefined,
-    imageAlt: "Freelancer platform logo",
+    period: "Dec 2023 - Jan 2025",
+    description:
+      "Improved product UX and platform reliability through tailored frontend components and low-latency APIs. Built responsive interfaces, strengthened application flows, and supported cleaner, more maintainable product delivery.",
     points: [
-      "Delivered multiple full-stack applications from concept to production, aligning technical solutions with business requirements and user needs",
-      "Built responsive, high-performance user interfaces and stable backend systems, ensuring consistent user experience across devices",
-      "Owned end-to-end project execution, including planning, development, and deployment, while maintaining code quality and delivery speed",
-      "Translated client requirements into scalable technical solutions, reducing iteration cycles and improving delivery efficiency",
-      "Implemented API integrations and structured backend systems, enabling flexible and extensible product features",
+      "Responsive interface systems with reliable cross-device behavior",
+      "Low-latency API integrations for smoother product workflows",
+      "Cleaner engineering structure for maintainable feature delivery",
+    ],
+  },
+  {
+    company: "Freelancer.com / Personal Clients",
+    role: "Full Stack Engineer",
+    period: "Jan 2023 - Dec 2023",
+    description:
+      "Developed full-stack web applications from concept to deployment, translating client requirements into responsive interfaces, structured backend logic, API integrations, and production-ready user experiences.",
+    points: [
+      "End-to-end delivery from requirement discovery to deployment",
+      "Backend logic and integrations aligned with practical product needs",
+      "Production-ready responsive interfaces with clear user journeys",
     ],
   },
 ];
@@ -62,6 +68,7 @@ export const Experience = () => (
                   <span className="text-xs font-mono text-muted-foreground">{r.period}</span>
                 </div>
                 <div className="text-primary text-sm font-medium mb-4">{r.role}</div>
+                <p className="text-sm md:text-base text-foreground/80 leading-relaxed mb-4">{r.description}</p>
                 <ul className="space-y-2">
                   {r.points.map((p) => (
                     <li key={p} className="flex gap-3 text-sm md:text-base text-foreground/80 leading-relaxed">
@@ -70,24 +77,6 @@ export const Experience = () => (
                     </li>
                   ))}
                 </ul>
-                {r.image && (
-                  <div className="mt-5 pt-5 border-t border-border/50">
-                    <div
-                      className="relative w-full rounded-xl overflow-hidden border border-primary/20"
-                      style={{
-                        boxShadow: "0 0 0 1px hsl(190 95% 55% / 0.08), 0 8px 32px rgba(0,0,0,0.5), 0 0 48px hsl(250 90% 66% / 0.12)",
-                      }}
-                    >
-                      <img
-                        src={r.image}
-                        alt={r.imageAlt}
-                        className="w-full h-auto block"
-                        style={{ display: "block" }}
-                        loading="lazy"
-                      />
-                    </div>
-                  </div>
-                )}
               </div>
             </motion.div>
           ))}
