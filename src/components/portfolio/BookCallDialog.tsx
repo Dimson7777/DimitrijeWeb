@@ -3,7 +3,6 @@ import { addDays, format, isSameDay, startOfDay } from "date-fns";
 import { ArrowLeft, ArrowRight, Calendar as CalendarIcon, Check, Clock, Loader2, Mail } from "lucide-react";
 import { z } from "zod";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 type Props = {
@@ -13,6 +12,7 @@ type Props = {
 
 // Available hours (local time) people can book — kept simple on purpose
 const SLOT_HOURS = [9, 10, 11, 13, 14, 15, 16, 17];
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xvzlvnre";
 
 // Validation matches the database constraint
 const bookingSchema = z.object({
@@ -28,9 +28,13 @@ export const BookCallDialog = ({ open, onOpenChange }: Props) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [taken, setTaken] = useState<Date[]>([]);
-  const [loadingSlots, setLoadingSlots] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [submittedDetails, setSubmittedDetails] = useState<{
+    name: string;
+    email: string;
+    selectedTime: Date;
+  } | null>(null);
 
   // Reset state every time the dialog reopens
   useEffect(() => {
@@ -39,28 +43,8 @@ export const BookCallDialog = ({ open, onOpenChange }: Props) => {
       setSelectedDate(null);
       setSelectedTime(null);
       setForm({ name: "", email: "", message: "" });
+      setSubmittedDetails(null);
     }
-  }, [open]);
-
-  // Load already-booked slots so we can grey them out
-  useEffect(() => {
-    if (!open) return;
-    let cancelled = false;
-    setLoadingSlots(true);
-    supabase
-      .rpc("get_booked_slots")
-      .then(({ data, error }) => {
-        if (cancelled) return;
-        if (error) {
-          console.error("Could not load slots", error);
-        } else if (data) {
-          setTaken(data.map((d: { scheduled_at: string }) => new Date(d.scheduled_at)));
-        }
-        setLoadingSlots(false);
-      });
-    return () => {
-      cancelled = true;
-    };
   }, [open]);
 
   // Next 14 weekdays
@@ -87,7 +71,7 @@ export const BookCallDialog = ({ open, onOpenChange }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedTime) return;
+    if (!selectedTime || submitting) return;
 
     const parsed = bookingSchema.safeParse(form);
     if (!parsed.success) {
@@ -96,27 +80,50 @@ export const BookCallDialog = ({ open, onOpenChange }: Props) => {
     }
 
     setSubmitting(true);
-    const { error } = await supabase.from("bookings").insert({
-      name: parsed.data.name,
-      email: parsed.data.email,
-      message: parsed.data.message || null,
-      scheduled_at: selectedTime.toISOString(),
-    });
-    setSubmitting(false);
 
-    if (error) {
-      // Most likely duplicate slot
-      if (error.code === "23505") {
-        toast.error("That time was just booked. Please pick another slot.");
-        setStep("date");
-        setSelectedTime(null);
-      } else {
-        toast.error("Something went wrong. Please try again or email me directly.");
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: parsed.data.name,
+          email: parsed.data.email,
+          selectedDate: format(selectedTime, "yyyy-MM-dd"),
+          selectedTime: format(selectedTime, "HH:mm"),
+          message: parsed.data.message || "",
+        }),
+      });
+
+      const data = (await response.json().catch(() => null)) as
+        | { errors?: Array<{ message?: string }> }
+        | null;
+
+      if (!response.ok) {
+        const formspreeError = data?.errors?.[0]?.message;
+        toast.error(
+          formspreeError ||
+            "Couldn't send your booking request. Please check your details and try again."
+        );
+        return;
       }
-      return;
-    }
 
-    setStep("done");
+      setSubmittedDetails({
+        name: parsed.data.name,
+        email: parsed.data.email,
+        selectedTime,
+      });
+      setForm({ name: "", email: "", message: "" });
+      setStep("done");
+      toast.success("Meeting request sent successfully. I'll get back to you soon.");
+    } catch (error) {
+      console.error("Booking request failed:", error);
+      toast.error("Network error. Please try again in a moment.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -184,33 +191,27 @@ export const BookCallDialog = ({ open, onOpenChange }: Props) => {
                   <Clock size={14} className="text-muted-foreground" />
                   Available times — {format(selectedDate, "EEEE, MMM d")}
                 </h3>
-                {loadingSlots ? (
-                  <div className="flex items-center justify-center py-8 text-muted-foreground">
-                    <Loader2 className="animate-spin" size={18} />
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                    {slotsForDay.map(({ time, isTaken }) => {
-                      const isSelected = selectedTime?.getTime() === time.getTime();
-                      return (
-                        <button
-                          key={time.toISOString()}
-                          disabled={isTaken}
-                          onClick={() => setSelectedTime(time)}
-                          className={`py-2.5 rounded-xl text-sm font-medium border transition-all ${
-                            isTaken
-                              ? "border-border/40 text-muted-foreground/40 line-through cursor-not-allowed"
-                              : isSelected
-                              ? "border-primary bg-primary text-primary-foreground"
-                              : "border-border hover:border-primary/40 hover:bg-secondary/40"
-                          }`}
-                        >
-                          {format(time, "HH:mm")}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  {slotsForDay.map(({ time, isTaken }) => {
+                    const isSelected = selectedTime?.getTime() === time.getTime();
+                    return (
+                      <button
+                        key={time.toISOString()}
+                        disabled={isTaken}
+                        onClick={() => setSelectedTime(time)}
+                        className={`py-2.5 rounded-xl text-sm font-medium border transition-all ${
+                          isTaken
+                            ? "border-border/40 text-muted-foreground/40 line-through cursor-not-allowed"
+                            : isSelected
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border hover:border-primary/40 hover:bg-secondary/40"
+                        }`}
+                      >
+                        {format(time, "HH:mm")}
+                      </button>
+                    );
+                  })}
+                </div>
                 <p className="text-[11px] text-muted-foreground mt-3">
                   Times shown in your local timezone.
                 </p>
@@ -291,7 +292,7 @@ export const BookCallDialog = ({ open, onOpenChange }: Props) => {
             >
               {submitting ? (
                 <>
-                  <Loader2 className="animate-spin" size={14} /> Booking...
+                  <Loader2 className="animate-spin" size={14} /> Sending booking request...
                 </>
               ) : (
                 <>Confirm booking</>
@@ -301,31 +302,31 @@ export const BookCallDialog = ({ open, onOpenChange }: Props) => {
         )}
 
         {/* Step: confirmation */}
-        {step === "done" && selectedTime && (
+        {step === "done" && submittedDetails && (
           <div className="p-8 text-center space-y-4">
             <div className="w-14 h-14 rounded-full bg-primary/15 text-primary inline-flex items-center justify-center mx-auto">
               <Check size={26} />
             </div>
             <div>
-              <h3 className="font-display text-2xl font-bold">You're booked.</h3>
+              <h3 className="font-display text-2xl font-bold">Meeting request sent successfully.</h3>
               <p className="text-sm text-muted-foreground mt-2">
-                See you on{" "}
+                I'll get back to you soon. Requested for{" "}
                 <span className="text-foreground font-medium">
-                  {format(selectedTime, "EEEE, MMM d 'at' HH:mm")}
+                  {format(submittedDetails.selectedTime, "EEEE, MMM d 'at' HH:mm")}
                 </span>
-                . I'll send a confirmation to{" "}
-                <span className="text-foreground font-medium">{form.email}</span>.
+                {" "}from{" "}
+                <span className="text-foreground font-medium">{submittedDetails.email}</span>.
               </p>
             </div>
 
             <a
               href={`mailto:dimibukejlovic@icloud.com?subject=Intro%20call%20${encodeURIComponent(
-                format(selectedTime, "MMM d HH:mm")
+                format(submittedDetails.selectedTime, "MMM d HH:mm")
               )}&body=${encodeURIComponent(
                 `Hi Dimitrije,\n\nJust booked an intro call for ${format(
-                  selectedTime,
+                  submittedDetails.selectedTime,
                   "EEEE, MMM d 'at' HH:mm"
-                )}.\n\n— ${form.name}`
+                )}.\n\n— ${submittedDetails.name}`
               )}`}
               className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
