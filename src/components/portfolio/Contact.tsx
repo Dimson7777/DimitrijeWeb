@@ -4,9 +4,11 @@ import { Calendar, ExternalLink, Github } from "lucide-react";
 import { ContactForm } from "./ContactForm";
 import { SectionHeading } from "./SectionHeading";
 import { BookCallDialog } from "./BookCallDialog";
+import { CVDialog } from "./CVDialog";
 
 export const Contact = () => {
   const [bookOpen, setBookOpen] = useState(false);
+  const [cvOpen, setCvOpen] = useState(false);
 
   return (
     <section id="contact" className="py-20 md:py-28 relative overflow-hidden">
@@ -51,19 +53,18 @@ export const Contact = () => {
             >
               <Github size={16} /> GitHub
             </a>
-            <a
-              href="/cv.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => setCvOpen(true)}
               className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-border text-foreground font-medium text-sm hover:bg-secondary/60 hover:-translate-y-0.5 transition-all"
             >
               <ExternalLink size={16} /> View CV
-            </a>
+            </button>
           </div>
         </motion.div>
       </div>
 
       <BookCallDialog open={bookOpen} onOpenChange={setBookOpen} />
+      <CVDialog open={cvOpen} onOpenChange={setCvOpen} />
     </section>
   );
 };
