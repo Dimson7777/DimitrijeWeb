@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ExternalLink, Github, Linkedin, Mail } from "lucide-react";
 import profile from "@/assets/profile.png";
-import { CVDialog } from "./CVDialog";
 
 const PARTICLES = [
   { top: "12%", left: "8%", size: "3px", delay: "0s", duration: "8s", opacity: 0.45 },
@@ -28,7 +27,6 @@ export const Hero = () => {
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
   const [displayedText, setDisplayedText] = useState(FULL_HEADLINE);
   const [isTyping, setIsTyping] = useState(false);
-  const [cvOpen, setCvOpen] = useState(false);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -178,12 +176,14 @@ export const Hero = () => {
               >
                 Contact Me
               </a>
-              <button
-                onClick={() => setCvOpen(true)}
+              <a
+                href="/cv.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-border text-foreground font-medium text-sm hover:bg-secondary/60 hover:-translate-y-0.5 transition-all"
               >
                 <ExternalLink size={16} /> View CV
-              </button>
+              </a>
             </div>
 
             <div className="mt-10 flex items-center gap-3">
@@ -217,8 +217,6 @@ export const Hero = () => {
           </motion.div>
         </div>
       </div>
-
-      <CVDialog open={cvOpen} onOpenChange={setCvOpen} />
     </section>
   );
 };
