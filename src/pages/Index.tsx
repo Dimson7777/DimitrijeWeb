@@ -11,6 +11,7 @@ import { Skills } from "@/components/portfolio/Skills";
 import { Contact } from "@/components/portfolio/Contact";
 import { Footer } from "@/components/portfolio/Footer";
 import { Loader } from "@/components/portfolio/Loader";
+import { ScrollCinematicTransition } from "@/components/portfolio/ScrollCinematicTransition";
 
 const Index = () => {
   return (
@@ -19,15 +20,17 @@ const Index = () => {
       <Navbar />
       <main>
         <Hero />
-        <Stats />
-        <About />
-        <Interests />
-        <Experience />
-        <FeaturedProject />
-        <Projects />
-        <Deliver />
-        <Skills />
-        <Contact />
+        <ScrollCinematicTransition>
+          <Stats />
+          <About />
+          <Interests />
+          <Experience />
+          <FeaturedProject />
+          <Projects />
+          <Deliver />
+          <Skills />
+          <Contact />
+        </ScrollCinematicTransition>
       </main>
       <Footer />
     </div>
