@@ -7,11 +7,13 @@ const roles = [
     role: "Full Stack Engineer",
     period: "Jan 2025 - Present",
     description:
-      "Designed and delivered production-ready full-stack features across frontend, backend, and database layers. Implemented secure authentication, role-based access control, API-driven workflows, and scalable product architecture.",
+      "Built and maintained full-stack product features across frontend, backend, and database layers. Worked on secure authentication, protected user flows, API-driven logic, dashboard experiences, and scalable product architecture with a strong focus on clean UX and reliable delivery.",
     points: [
-      "Production feature ownership from UI through API and database",
-      "Authentication and role-based access flows for protected product areas",
-      "Scalable architecture decisions supporting long-term product growth",
+      "Built production-ready SaaS features using React, TypeScript, Node.js, REST APIs, and database-backed workflows",
+      "Implemented secure authentication, role-based access, protected routes, and account-level user flows",
+      "Connected frontend UI with backend logic, API endpoints, and structured data models",
+      "Improved product reliability by debugging broken flows, cleaning code structure, and polishing user experience",
+      "Worked across product architecture, responsive UI, state handling, and deployment-ready feature delivery",
     ],
   },
   {
@@ -19,11 +21,13 @@ const roles = [
     role: "Full Stack Engineer",
     period: "Dec 2023 - Jan 2025",
     description:
-      "Improved product UX and platform reliability through tailored frontend components and low-latency APIs. Built responsive interfaces, strengthened application flows, and supported cleaner, more maintainable product delivery.",
+      "Developed responsive web applications and internal product tools with a focus on performance, clean interface design, and reliable backend communication. Turned product requirements into working features, improved user flows, and supported scalable frontend/backend implementation.",
     points: [
-      "Responsive interface systems with reliable cross-device behavior",
-      "Low-latency API integrations for smoother product workflows",
-      "Cleaner engineering structure for maintainable feature delivery",
+      "Built responsive frontend interfaces with reusable components and clear user journeys",
+      "Integrated REST APIs and backend services into stable product workflows",
+      "Improved application structure, loading states, error handling, and cross-device behavior",
+      "Collaborated on feature planning, UI polish, and technical decisions for maintainable delivery",
+      "Helped turn business requirements into clean, functional, production-ready web features",
     ],
   },
   {
@@ -31,11 +35,13 @@ const roles = [
     role: "Full Stack Engineer",
     period: "Jan 2023 - Dec 2023",
     description:
-      "Developed full-stack web applications from concept to deployment, translating client requirements into responsive interfaces, structured backend logic, API integrations, and production-ready user experiences.",
+      "Delivered full-stack web applications for clients from idea to deployment. Handled frontend design, backend logic, API integrations, responsive layouts, authentication flows, and production polish while communicating directly with clients and turning requirements into working products.",
     points: [
-      "End-to-end delivery from requirement discovery to deployment",
-      "Backend logic and integrations aligned with practical product needs",
-      "Production-ready responsive interfaces with clear user journeys",
+      "Delivered end-to-end web apps from planning and UI design to backend logic and deployment",
+      "Built responsive interfaces using React, JavaScript, HTML, CSS, and modern frontend patterns",
+      "Created API-connected features, form flows, dashboards, and structured application logic",
+      "Improved client projects through debugging, UX polish, performance fixes, and clean deployment setup",
+      "Managed requirements, feedback, iterations, and final delivery independently",
     ],
   },
 ];
