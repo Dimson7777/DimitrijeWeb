@@ -13,17 +13,9 @@ const links = [
 ];
 
 export const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("home");
   const [bookOpen, setBookOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     const ids = links.map((l) => l.href.slice(1));
@@ -48,22 +40,18 @@ export const Navbar = () => {
       initial={{ y: -30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "py-3" : "py-4 md:py-5"}`}
+      className="fixed top-0 inset-x-0 z-50 border-b border-white/5 backdrop-blur-md bg-[#09090b]/80"
     >
       <div className="container">
-        <nav
-          className={`flex items-center justify-between rounded-full px-4 md:px-5 py-2.5 md:py-3 transition-all duration-500 ${
-            scrolled ? "glass-strong" : "bg-transparent border border-transparent"
-          }`}
-        >
+        <nav className="flex h-20 items-center justify-between">
           <a href="#home" className="flex items-center gap-2.5 shrink-0 group">
-            <span className="font-display font-bold text-lg tracking-tight">
+            <span className="font-display font-bold text-lg tracking-tighter">
               <span className="text-gradient-primary">DB</span>
               <span className="text-foreground">.</span>
             </span>
             <span className="hidden sm:flex flex-col leading-tight">
-              <span className="text-sm font-semibold text-foreground">Dimitrije Bukejlovic</span>
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Portfolio Website</span>
+              <span className="text-sm font-semibold text-zinc-100">Dimitrije Bukejlovic</span>
+              <span className="text-[10px] uppercase tracking-widest text-zinc-400">Portfolio Website</span>
             </span>
           </a>
 
@@ -75,13 +63,13 @@ export const Navbar = () => {
                   <a
                     href={l.href}
                     className={`relative px-4 py-2 text-sm transition-colors rounded-full ${
-                      isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                      isActive ? "text-zinc-100" : "text-zinc-400 hover:text-zinc-100"
                     }`}
                   >
                     {isActive && (
                       <motion.span
                         layoutId="nav-active"
-                        className="absolute inset-0 rounded-full bg-secondary/80 border border-border/60"
+                        className="absolute inset-0 rounded-full bg-white/5 border border-white/10"
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}
@@ -101,7 +89,7 @@ export const Navbar = () => {
             </button>
             <a
               href="#contact"
-              className="inline-flex items-center text-sm font-medium px-5 py-2.5 rounded-full bg-foreground text-background hover:bg-foreground/90 transition-colors"
+              className="inline-flex items-center text-sm font-medium px-5 py-2.5 rounded-full bg-zinc-100 text-zinc-950 hover:bg-zinc-200 transition-colors"
             >
               Let's talk
             </a>
@@ -110,7 +98,7 @@ export const Navbar = () => {
           <button
             aria-label="Toggle menu"
             onClick={() => setOpen((o) => !o)}
-            className="md:hidden p-2 rounded-full hover:bg-secondary/60"
+            className="md:hidden p-2 rounded-full text-zinc-100 hover:bg-white/10"
           >
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -122,7 +110,7 @@ export const Navbar = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="md:hidden mt-3 glass-strong rounded-2xl p-3 flex flex-col gap-1"
+              className="md:hidden mb-3 rounded-2xl border border-white/10 bg-zinc-900/80 p-3 flex flex-col gap-1"
             >
               {links.map((l) => {
                 const isActive = active === l.href.slice(1);
@@ -133,8 +121,8 @@ export const Navbar = () => {
                       onClick={() => setOpen(false)}
                       className={`block px-4 py-3 rounded-xl text-sm transition-colors ${
                         isActive
-                          ? "bg-secondary/80 text-foreground"
-                          : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+                          ? "bg-white/10 text-zinc-100"
+                          : "text-zinc-400 hover:text-zinc-100 hover:bg-white/10"
                       }`}
                     >
                       {l.label}
@@ -148,14 +136,14 @@ export const Navbar = () => {
                     setOpen(false);
                     setBookOpen(true);
                   }}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium border border-border hover:bg-secondary/60"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium border border-white/15 text-zinc-100 hover:bg-white/10"
                 >
                   <Calendar size={14} /> Book a Call
                 </button>
                 <a
                   href="#contact"
                   onClick={() => setOpen(false)}
-                  className="block text-center px-4 py-3 rounded-xl text-sm font-medium bg-foreground text-background"
+                  className="block text-center px-4 py-3 rounded-xl text-sm font-medium bg-zinc-100 text-zinc-950"
                 >
                   Let's talk
                 </a>

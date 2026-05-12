@@ -14,10 +14,10 @@ import { ScrollCinematicTransition } from "@/components/portfolio/ScrollCinemati
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div className="min-h-screen bg-[#09090b] text-zinc-100 overflow-x-hidden">
       <Loader />
       <Navbar />
-      <main>
+      <main className="pt-20 [&_section]:py-24 [&_h1]:font-bold [&_h1]:tracking-tighter [&_h2]:font-bold [&_h2]:tracking-tighter [&_h3]:font-bold [&_h3]:tracking-tighter [&_.text-muted-foreground]:!text-zinc-400 [&_p]:text-zinc-400">
         <Hero />
         <ScrollCinematicTransition>
           <Stats />
