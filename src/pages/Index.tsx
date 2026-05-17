@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Navbar } from "@/components/portfolio/Navbar";
 import { Hero } from "@/components/portfolio/Hero";
 import { Stats } from "@/components/portfolio/Stats";
@@ -13,6 +14,31 @@ import { Loader } from "@/components/portfolio/Loader";
 import { ScrollCinematicTransition } from "@/components/portfolio/ScrollCinematicTransition";
 
 const Index = () => {
+  useEffect(() => {
+    const canControlScrollRestore = "scrollRestoration" in window.history;
+    const previousScrollRestoration = canControlScrollRestore
+      ? window.history.scrollRestoration
+      : undefined;
+
+    if (canControlScrollRestore) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+
+    // Run once more on the next frame in case the browser restores scroll after mount.
+    const rafId = window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      if (canControlScrollRestore && previousScrollRestoration) {
+        window.history.scrollRestoration = previousScrollRestoration;
+      }
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100 overflow-x-hidden">
       <Loader />
