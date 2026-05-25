@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Blocks, Compass, LayoutPanelTop, MapPin, ServerCog, UserRoundCheck } from "lucide-react";
 import { SectionHeading } from "./SectionHeading";
+import profile from "@/assets/profile.png";
 
 const snapshotItems = [
   {
@@ -93,34 +94,57 @@ export const About = () => (
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="glass rounded-2xl border border-primary/15 p-6 md:p-7 space-y-5 bg-gradient-to-b from-background/65 to-background/35 shadow-[0_14px_36px_-26px_hsl(var(--primary)/0.85)]"
+          className="space-y-4 lg:-mt-10"
         >
-          <div>
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground">
-              <UserRoundCheck size={13} className="text-primary/85" />
-              CURRENTLY
-            </div>
-            <div className="mt-2 text-base md:text-lg font-semibold text-foreground">Full Stack Engineer @ TokenFlow</div>
+          <div className="flex justify-center lg:justify-start lg:pl-1">
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 5.8, repeat: Infinity, ease: "easeInOut" }}
+              className="relative"
+            >
+              <div className="absolute -inset-6 rounded-full bg-primary/20 blur-2xl opacity-70 pointer-events-none" />
+              <div className="relative w-32 h-32 md:w-36 md:h-36 rounded-full p-[1px] bg-gradient-to-br from-primary/55 via-primary-glow/35 to-accent-cyan/35 shadow-[0_0_24px_hsl(var(--primary)/0.36)]">
+                <div className="w-full h-full rounded-full overflow-hidden border border-border/80 bg-card/70">
+                  <img
+                    src={profile}
+                    alt="Dimitrije Bukejlovic"
+                    width={180}
+                    height={180}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            </motion.div>
           </div>
 
-          <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-
-          <div>
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground">
-              <MapPin size={13} className="text-primary/85" />
-              BASED
+          <div className="glass rounded-2xl border border-primary/15 p-6 md:p-7 space-y-5 bg-gradient-to-b from-background/65 to-background/35 shadow-[0_14px_36px_-26px_hsl(var(--primary)/0.85)]">
+            <div>
+              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground">
+                <UserRoundCheck size={13} className="text-primary/85" />
+                CURRENTLY
+              </div>
+              <div className="mt-2 text-base md:text-lg font-semibold text-foreground">Full Stack Engineer @ TokenFlow</div>
             </div>
-            <div className="mt-2 text-base md:text-lg font-semibold text-foreground">Remote · Open worldwide</div>
-          </div>
 
-          <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+            <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-          <div>
-            <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground">
-              <Compass size={13} className="text-primary/85" />
-              APPROACH
+            <div>
+              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground">
+                <MapPin size={13} className="text-primary/85" />
+                BASED
+              </div>
+              <div className="mt-2 text-base md:text-lg font-semibold text-foreground">Remote · Open worldwide</div>
             </div>
-            <div className="mt-2 text-base md:text-lg font-semibold text-foreground">Plan → Build → Ship → Improve</div>
+
+            <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+
+            <div>
+              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-muted-foreground">
+                <Compass size={13} className="text-primary/85" />
+                APPROACH
+              </div>
+              <div className="mt-2 text-base md:text-lg font-semibold text-foreground">Plan → Build → Ship → Improve</div>
+            </div>
           </div>
         </motion.div>
       </div>

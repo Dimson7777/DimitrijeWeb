@@ -1,224 +1,381 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ExternalLink, Github, Linkedin, Mail } from "lucide-react";
-import profile from "@/assets/profile.png";
-
-const PARTICLES = [
-  { top: "12%", left: "8%", size: "3px", delay: "0s", duration: "8s", opacity: 0.45 },
-  { top: "22%", left: "20%", size: "2px", delay: "1.8s", duration: "9.5s", opacity: 0.35 },
-  { top: "16%", left: "38%", size: "2px", delay: "0.8s", duration: "7.5s", opacity: 0.4 },
-  { top: "30%", left: "55%", size: "3px", delay: "2.2s", duration: "10s", opacity: 0.45 },
-  { top: "18%", left: "72%", size: "2px", delay: "1.2s", duration: "8.2s", opacity: 0.35 },
-  { top: "10%", left: "88%", size: "2px", delay: "2.8s", duration: "9s", opacity: 0.3 },
-  { top: "44%", left: "12%", size: "2px", delay: "1s", duration: "10.5s", opacity: 0.3 },
-  { top: "50%", left: "30%", size: "3px", delay: "3.1s", duration: "8.8s", opacity: 0.42 },
-  { top: "58%", left: "48%", size: "2px", delay: "2.4s", duration: "9.2s", opacity: 0.33 },
-  { top: "46%", left: "66%", size: "2px", delay: "0.4s", duration: "8.4s", opacity: 0.3 },
-  { top: "62%", left: "82%", size: "3px", delay: "3.3s", duration: "10.8s", opacity: 0.4 },
-  { top: "72%", left: "22%", size: "2px", delay: "1.6s", duration: "9.8s", opacity: 0.28 },
-  { top: "76%", left: "58%", size: "2px", delay: "2.1s", duration: "8.7s", opacity: 0.3 },
-  { top: "68%", left: "92%", size: "2px", delay: "3s", duration: "9.4s", opacity: 0.25 },
-];
 
 const FULL_HEADLINE = "Building production-ready\nfull-stack systems for\nmodern digital products.";
-const TYPE_INTERVAL_MS = 34;
+const TYPE_INTERVAL_MS = 38;
+
+const HERO_STATS = [
+  { value: 4, suffix: "+", label: "Years Experience" },
+  { value: 30, suffix: "+", label: "Full-Stack Projects" },
+  { value: 20, suffix: "+", label: "SaaS Workflows" },
+  { value: 100, suffix: "%", label: "Responsive Interfaces" },
+];
+
+const AMBIENT_ORBS = [
+  { top: "18%", left: "16%", size: 8, delay: 0, dur: 7.4 },
+  { top: "24%", left: "72%", size: 10, delay: 0.8, dur: 8.2 },
+  { top: "64%", left: "30%", size: 7, delay: 1.3, dur: 7.8 },
+  { top: "70%", left: "82%", size: 9, delay: 1.8, dur: 8.6 },
+];
 
 export const Hero = () => {
-  const [parallax, setParallax] = useState({ x: 0, y: 0 });
   const [displayedText, setDisplayedText] = useState(FULL_HEADLINE);
   const [isTyping, setIsTyping] = useState(false);
-
-  useEffect(() => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const desktop = window.matchMedia("(min-width: 768px)");
-    const finePointer = window.matchMedia("(pointer: fine)");
-
-    if (reduceMotion.matches || !desktop.matches || !finePointer.matches) {
-      return;
-    }
-
-    let frame = 0;
-
-    const onMouseMove = (event: MouseEvent) => {
-      const x = (event.clientX / window.innerWidth - 0.5) * 10;
-      const y = (event.clientY / window.innerHeight - 0.5) * 8;
-
-      cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(() => {
-        setParallax({ x, y });
-      });
-    };
-
-    window.addEventListener("mousemove", onMouseMove, { passive: true });
-
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("mousemove", onMouseMove);
-    };
-  }, []);
+  const [revealContent, setRevealContent] = useState(true);
+  const [revealStats, setRevealStats] = useState(true);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (reduceMotion.matches) {
       setDisplayedText(FULL_HEADLINE);
       setIsTyping(false);
+      setRevealContent(true);
+      setRevealStats(true);
       return;
     }
 
     setIsTyping(true);
-    setDisplayedText(FULL_HEADLINE.slice(0, 1));
+    setRevealContent(false);
+    setRevealStats(false);
+    setDisplayedText("");
 
-    let index = 1;
-    const timer = window.setInterval(() => {
+    let index = 0;
+    let timeoutId = 0;
+
+    const typeNext = () => {
       index += 1;
+      setDisplayedText(FULL_HEADLINE.slice(0, index));
 
       if (index >= FULL_HEADLINE.length) {
-        setDisplayedText(FULL_HEADLINE);
         setIsTyping(false);
-        window.clearInterval(timer);
+        window.setTimeout(() => setRevealContent(true), 130);
         return;
       }
 
-      setDisplayedText(FULL_HEADLINE.slice(0, index));
-    }, TYPE_INTERVAL_MS);
+      const nextDelay = FULL_HEADLINE[index] === "\n" ? TYPE_INTERVAL_MS + 70 : TYPE_INTERVAL_MS;
+      timeoutId = window.setTimeout(typeNext, nextDelay);
+    };
+
+    timeoutId = window.setTimeout(typeNext, TYPE_INTERVAL_MS);
 
     return () => {
-      window.clearInterval(timer);
+      window.clearTimeout(timeoutId);
     };
   }, []);
 
-  const headlineLines = displayedText.split("\n");
+  useEffect(() => {
+    if (!revealContent) {
+      setRevealStats(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setRevealStats(true);
+    }, 340);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [revealContent]);
+
+  const fixedHeadlineLines = FULL_HEADLINE.split("\n");
+  const typedLines = displayedText.split("\n");
 
   return (
-    <section
-      id="home"
-      className="relative pt-24 md:pt-28 pb-20 md:pb-24 overflow-hidden"
-      style={
-        {
-          "--hero-parallax-x": `${parallax.x}px`,
-          "--hero-parallax-y": `${parallax.y}px`,
-        } as React.CSSProperties
-      }
-    >
-      <div className="hero-bg absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="hero-bg-glow hero-parallax-layer" />
-        <div className="hero-particles hero-parallax-layer">
-          {PARTICLES.map((particle, index) => (
-            <span
+    <section id="home" className="relative overflow-hidden pt-28 md:pt-36 pb-24 md:pb-32">
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute inset-0 bg-[linear-gradient(178deg,hsl(232_34%_6%)_0%,hsl(232_30%_5%)_56%,hsl(230_26%_5%)_100%)]" />
+        <motion.div
+          animate={{ rotate: [0, 8, 0, -8, 0], scale: [1, 1.04, 1.01, 1.04, 1] }}
+          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-[32%] left-1/2 w-[1050px] h-[1050px] -translate-x-1/2 rounded-full opacity-[0.2] blur-3xl bg-[conic-gradient(from_180deg_at_50%_50%,hsl(var(--primary)/0.18),hsl(var(--accent-cyan)/0.1),hsl(var(--primary-glow)/0.14),hsl(var(--primary)/0.18))]"
+        />
+        <motion.div
+          animate={{
+            backgroundPosition: ["50% 16%", "52% 20%", "49% 18%", "50% 16%"],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 bg-[radial-gradient(52%_46%_at_50%_16%,hsl(var(--primary)/0.2),transparent_72%)]"
+        />
+        <motion.div
+          animate={{
+            opacity: [0.22, 0.34, 0.2, 0.22],
+            x: [0, 20, -12, 0],
+          }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -inset-x-8 top-20 h-36 bg-[linear-gradient(90deg,transparent,hsl(var(--accent-cyan)/0.16),transparent)] blur-3xl"
+        />
+        <motion.div
+          animate={{ x: ["-8%", "8%", "-8%"], opacity: [0.2, 0.33, 0.2] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-x-[-14%] bottom-[18%] h-32 bg-[repeating-linear-gradient(100deg,transparent_0%,transparent_12%,hsl(var(--primary)/0.12)_26%,transparent_38%)] blur-2xl"
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(36%_32%_at_78%_28%,hsl(var(--accent-cyan)/0.1),transparent_78%)]" />
+        <div className="absolute inset-0">
+          {AMBIENT_ORBS.map((orb, index) => (
+            <motion.span
               key={index}
-              className="hero-particle"
-              style={
-                {
-                  top: particle.top,
-                  left: particle.left,
-                  width: particle.size,
-                  height: particle.size,
-                  opacity: particle.opacity,
-                  "--delay": particle.delay,
-                  "--dur": particle.duration,
-                } as React.CSSProperties
-              }
+              className="absolute rounded-full bg-primary/30 blur-md"
+              style={{
+                top: orb.top,
+                left: orb.left,
+                width: `${orb.size}px`,
+                height: `${orb.size}px`,
+              }}
+              animate={{
+                y: [0, -9, 0],
+                opacity: [0.15, 0.34, 0.15],
+              }}
+              transition={{ duration: orb.dur, delay: orb.delay, repeat: Infinity, ease: "easeInOut" }}
             />
           ))}
         </div>
-        <div className="hero-shooting-star hero-parallax-layer" />
+        <div className="absolute inset-0 grid-bg opacity-[0.055]" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-background/70" />
       </div>
 
-      <div className="absolute inset-0 grid-bg pointer-events-none" />
-      <div className="hero-parallax-layer absolute top-1/3 -left-32 w-[480px] h-[480px] bg-primary/20 rounded-full blur-[120px] animate-glow-pulse pointer-events-none" />
-      <div className="hero-parallax-layer absolute bottom-0 right-0 w-[420px] h-[420px] bg-accent-cyan/10 rounded-full blur-[120px] pointer-events-none" />
-
       <div className="container relative z-10">
-        <div className="mx-auto max-w-[1220px] grid lg:grid-cols-[1.38fr_1fr] gap-10 lg:gap-12 items-center">
-          <div className="order-2 lg:order-1 self-center">
-            <motion.div
-              initial={{ opacity: 1, y: 0 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2 }}
-              className="inline-flex w-fit items-center gap-2.5 px-5 py-2.5 rounded-full border border-primary/35 bg-card/75 text-[0.82rem] sm:text-sm font-mono text-foreground/95 shadow-[0_10px_28px_-16px_hsl(var(--primary)/0.8)] mb-8 tracking-wide"
+        <div className="mx-auto max-w-5xl text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            whileHover={{ scale: 1.02, y: -1 }}
+            whileTap={{ scale: 0.995 }}
+            className="group relative inline-flex items-center gap-2.5 px-[1.125rem] py-2 rounded-full border border-primary/30 bg-card/65 text-[0.68rem] sm:text-[0.7rem] font-mono tracking-[0.15em] uppercase text-foreground/90 shadow-[0_10px_28px_-18px_hsl(var(--primary)/0.7)] overflow-hidden"
+            style={{ willChange: "transform" }}
+          >
+            <motion.span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(64%_120%_at_14%_50%,hsl(var(--accent-cyan)/0.18),transparent_70%)]"
+              animate={{ x: ["-6%", "8%", "-6%"], opacity: [0.22, 0.36, 0.22] }}
+              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.span
+              aria-hidden
+              className="pointer-events-none absolute -inset-y-2 -left-16 w-16 bg-gradient-to-r from-transparent via-white/20 to-transparent blur-[2px]"
+              animate={{ x: [0, 360] }}
+              transition={{ duration: 3.8, repeat: Infinity, repeatDelay: 2.8, ease: "easeInOut" }}
+            />
+            <motion.span
+              className="relative inline-flex w-3 h-3 items-center justify-center"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
             >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-cyan opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-cyan" />
+              <span className="absolute w-1.5 h-1.5 rounded-full bg-accent-cyan shadow-[0_0_16px_hsl(var(--accent-cyan)/0.95)]" />
+              <motion.span
+                aria-hidden
+                className="absolute inset-0 rounded-full border border-accent-cyan/55"
+                animate={{ rotate: [0, 360], opacity: [0.3, 0.65, 0.3] }}
+                transition={{ rotate: { duration: 7, repeat: Infinity, ease: "linear" }, opacity: { duration: 2.8, repeat: Infinity, ease: "easeInOut" } }}
+              />
+            </motion.span>
+            Engineering Clean UI & Scalable Systems
+          </motion.div>
+
+          <h1 className="mt-8 md:mt-10 mx-auto max-w-[20ch] min-h-[3.05em] font-display text-[clamp(2.3rem,7.2vw,5.2rem)] font-bold leading-[0.98] tracking-[-0.02em] text-foreground">
+            {fixedHeadlineLines.map((_, lineIndex) => (
+              <span
+                key={lineIndex}
+                className={`block hero-headline-line ${lineIndex === 1 ? "text-gradient-primary" : "text-foreground"}`}
+              >
+                {typedLines[lineIndex] && typedLines[lineIndex].length > 0 ? typedLines[lineIndex] : "\u00A0"}
               </span>
-              Full Stack Engineer · 4 Years of Experience
-            </motion.div>
+            ))}
+            {isTyping && <span className="hero-type-cursor" aria-hidden="true" />}
+          </h1>
 
-            <h1 className="max-w-[19ch] min-h-[3.2em] font-display text-[clamp(2.35rem,7.4vw,5.1rem)] font-bold leading-[0.98] tracking-[-0.02em] text-foreground">
-              {headlineLines.map((line, lineIndex) => (
-                <span
-                  key={lineIndex}
-                  className={`block hero-headline-line ${
-                    lineIndex === 1 ? "text-gradient-primary" : "text-foreground"
-                  }`}
-                >
-                  {line.length > 0 ? line : "\u00A0"}
-                </span>
-              ))}
-              {isTyping && <span className="hero-type-cursor" aria-hidden="true" />}
-            </h1>
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: revealContent ? 1 : 0, y: revealContent ? 0 : 12 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="mt-7 md:mt-8 mx-auto max-w-[66ch] text-base md:text-lg text-foreground/78 leading-relaxed"
+          >
+            I build production-ready full-stack applications with clean UI, secure authentication, API-driven architecture, scalable backend logic, and polished user experiences designed for real-world use.
+          </motion.p>
 
-            <p className="mt-7 md:mt-8 text-lg md:text-[1.15rem] text-foreground/85 max-w-[62ch] leading-relaxed">
-              I build production-ready full-stack applications with clean UI, secure authentication, API-driven architecture, scalable backend logic, and polished user experiences designed for real-world use.
-            </p>
-
-            <div className="mt-9 md:mt-10 flex flex-wrap lg:flex-nowrap items-center gap-3.5">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: revealContent ? 1 : 0, y: revealContent ? 0 : 12 }}
+            transition={{ duration: 0.45, ease: "easeOut", delay: 0.06 }}
+            className="mt-9 md:mt-10"
+          >
+            <div className="flex flex-wrap justify-center items-center gap-3.5">
               <a
                 href="#projects"
-                className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-primary to-primary-glow text-primary-foreground font-medium text-sm shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.6)] hover:shadow-[0_12px_40px_-8px_hsl(var(--primary)/0.8)] transition-all hover:-translate-y-0.5"
+                className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-primary to-primary-glow text-primary-foreground font-medium text-sm shadow-[0_10px_34px_-12px_hsl(var(--primary)/0.58)] hover:shadow-[0_14px_42px_-10px_hsl(var(--primary)/0.72)] transition-all hover:-translate-y-0.5"
               >
                 View Projects
                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </a>
               <a
                 href="#contact"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full glass-strong text-foreground font-medium text-sm hover:border-primary/40 transition-all hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-border bg-card/35 text-foreground font-medium text-sm hover:border-primary/45 hover:bg-card/55 transition-all hover:-translate-y-0.5"
               >
                 Contact Me
               </a>
+            </div>
+
+            <div className="mt-3.5 flex justify-center">
               <a
                 href="/cv.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-border text-foreground font-medium text-sm hover:bg-secondary/60 hover:-translate-y-0.5 transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border/85 text-foreground/92 font-medium text-sm hover:border-primary/40 hover:bg-secondary/45 hover:-translate-y-0.5 transition-all"
               >
                 <ExternalLink size={16} /> View CV
               </a>
             </div>
-
-            <div className="mt-10 flex items-center gap-3">
-              <SocialIcon href="https://github.com/Dimson7777" label="GitHub"><Github size={18} /></SocialIcon>
-              <SocialIcon href="https://www.linkedin.com/in/dimitrije-bukejlovic-9055a8400/" label="LinkedIn"><Linkedin size={18} /></SocialIcon>
-              <SocialIcon href="mailto:dimibukejlovic@icloud.com" label="Email"><Mail size={18} /></SocialIcon>
-            </div>
-          </div>
+          </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="order-1 lg:order-2 flex justify-center self-center"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: revealStats ? 1 : 0, y: revealStats ? 0 : 12 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="mt-11 md:mt-12 max-w-4xl mx-auto"
           >
-            <div className="relative flex flex-col items-center">
-              <div className="absolute -inset-6 bg-gradient-to-tr from-primary/40 via-primary-glow/30 to-accent-cyan/30 rounded-full blur-2xl opacity-70 animate-glow-pulse" />
-              <div className="relative w-60 h-60 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden border border-border/80 glass-strong p-1.5">
-                <img
-                  src={profile}
-                  alt="Dimitrije Bukejlovic — Full Stack Engineer"
-                  width={512}
-                  height={512}
-                  className="w-full h-full object-cover rounded-full"
-                />
-              </div>
-              <div className="mt-4 glass-strong rounded-2xl px-4 py-2.5 text-xs font-mono border border-border/70">
-                <span className="text-accent-cyan">$</span> Engineering clean, production-ready systems
-              </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5 items-start">
+            {HERO_STATS.map((stat, index) => (
+              <StatMetric
+                key={stat.label}
+                value={stat.value}
+                suffix={stat.suffix}
+                label={stat.label}
+                delay={0.14 + index * 0.12}
+                showDivider={index < HERO_STATS.length - 1}
+                start={revealStats}
+              />
+            ))}
             </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: revealContent ? 1 : 0, y: revealContent ? 0 : 10 }}
+            transition={{ duration: 0.4, delay: 0.12 }}
+            className="mt-9 flex items-center justify-center gap-3"
+          >
+            <SocialIcon href="https://github.com/Dimson7777" label="GitHub">
+              <Github size={18} />
+            </SocialIcon>
+            <SocialIcon href="https://www.linkedin.com/in/dimitrije-bukejlovic-9055a8400/" label="LinkedIn">
+              <Linkedin size={18} />
+            </SocialIcon>
+            <SocialIcon href="mailto:dimibukejlovic@icloud.com" label="Email">
+              <Mail size={18} />
+            </SocialIcon>
           </motion.div>
         </div>
       </div>
     </section>
   );
+};
+
+const StatMetric = ({
+  value,
+  suffix,
+  label,
+  delay,
+  showDivider,
+  start,
+}: {
+  value: number;
+  suffix: string;
+  label: string;
+  delay: number;
+  showDivider: boolean;
+  start: boolean;
+}) => {
+  const prefersReducedMotion = useReducedMotion();
+  const [shouldCount, setShouldCount] = useState(false);
+
+  useEffect(() => {
+    if (start) {
+      setShouldCount(true);
+    }
+  }, [start]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: start ? 1 : 0, y: start ? 0 : 14 }}
+      transition={{ duration: 0.45, delay }}
+      className="group relative px-1"
+    >
+      {showDivider && (
+        <span
+          aria-hidden
+          className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 h-9 w-px bg-gradient-to-b from-transparent via-primary/35 to-transparent"
+        />
+      )}
+
+      <div className="relative inline-flex items-center justify-center">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-[-0.35rem] inset-y-[-0.2rem] rounded-full bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.14),transparent_72%)] opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100"
+        />
+        <div className="relative inline-flex items-baseline overflow-hidden font-display text-[1.85rem] font-bold leading-none text-foreground md:text-[2rem]">
+          <span className="relative z-10 inline-flex items-baseline transition-transform duration-300 group-hover:scale-[1.03]">
+            <span className="relative">
+              <AnimatedCounter target={value} start={shouldCount} />
+              <span aria-hidden className="ml-[0.02em]">{suffix}</span>
+            </span>
+          </span>
+          <motion.span
+            aria-hidden
+            className="pointer-events-none absolute inset-y-[-10%] left-[-65%] w-1/2 bg-gradient-to-r from-transparent via-white/55 to-transparent mix-blend-screen opacity-0 blur-[1px]"
+            animate={prefersReducedMotion ? { opacity: 0 } : { x: [0, 320], opacity: [0, 0.75, 0] }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 3.8, repeat: Infinity, repeatDelay: 1.8, ease: "easeInOut" }}
+          />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 text-transparent [text-shadow:0_0_18px_rgba(168,85,247,0.22),0_0_26px_rgba(34,211,238,0.16)]"
+          >
+            <AnimatedCounter target={value} start={shouldCount} />
+            {suffix}
+          </span>
+        </div>
+      </div>
+      <div className="mt-2 text-[0.63rem] md:text-[0.68rem] font-mono uppercase tracking-[0.14em] text-foreground/62">{label}</div>
+    </motion.div>
+  );
+};
+
+const AnimatedCounter = ({ target, start }: { target: number; start: boolean }) => {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (!start) {
+      return;
+    }
+
+    let frame = 0;
+    let startTime: number | null = null;
+    const duration = 1100;
+
+    const tick = (time: number) => {
+      if (startTime === null) {
+        startTime = time;
+      }
+
+      const progress = Math.min((time - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(Math.floor(eased * target));
+
+      if (progress < 1) {
+        frame = window.requestAnimationFrame(tick);
+      }
+    };
+
+    frame = window.requestAnimationFrame(tick);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
+  }, [start, target]);
+
+  return <>{value}</>;
 };
 
 const SocialIcon = ({ href, label, children }: { href: string; label: string; children: React.ReactNode }) => (
@@ -227,7 +384,7 @@ const SocialIcon = ({ href, label, children }: { href: string; label: string; ch
     aria-label={label}
     target="_blank"
     rel="noopener noreferrer"
-    className="w-10 h-10 inline-flex items-center justify-center rounded-full glass text-muted-foreground hover:text-foreground hover:border-primary/40 hover:-translate-y-0.5 transition-all"
+    className="w-10 h-10 inline-flex items-center justify-center rounded-full border border-border/80 bg-card/40 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:-translate-y-0.5 transition-all"
   >
     {children}
   </a>
