@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import { ArrowRight, ExternalLink, Github, Linkedin, Mail } from "lucide-react";
+import { StatusCapsule } from "@/components/portfolio/StatusCapsule";
 
 const FULL_HEADLINE = "Building production-ready\nfull-stack systems for\nmodern digital products.";
 const TYPE_INTERVAL_MS = 38;
+
+/** Shared premium easing curve for entrance reveals. */
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 const HERO_STATS = [
   { value: 4, suffix: "+", label: "Years Experience" },
@@ -12,18 +22,49 @@ const HERO_STATS = [
   { value: 100, suffix: "%", label: "Responsive Interfaces" },
 ];
 
-const AMBIENT_ORBS = [
-  { top: "18%", left: "16%", size: 8, delay: 0, dur: 7.4 },
-  { top: "24%", left: "72%", size: 10, delay: 0.8, dur: 8.2 },
-  { top: "64%", left: "30%", size: 7, delay: 1.3, dur: 7.8 },
-  { top: "70%", left: "82%", size: 9, delay: 1.8, dur: 8.6 },
-];
+const PARTICLES = [
+  { top: "18%", left: "14%", size: 8, delay: 0, dur: 7.4, tone: "primary" },
+  { top: "22%", left: "72%", size: 10, delay: 0.8, dur: 8.2, tone: "cyan" },
+  { top: "64%", left: "28%", size: 7, delay: 1.3, dur: 7.8, tone: "cyan" },
+  { top: "70%", left: "82%", size: 9, delay: 1.8, dur: 8.6, tone: "primary" },
+  { top: "38%", left: "8%", size: 5, delay: 0.5, dur: 9.2, tone: "primary" },
+  { top: "12%", left: "46%", size: 4, delay: 1.1, dur: 8.8, tone: "cyan" },
+  { top: "54%", left: "62%", size: 6, delay: 2.1, dur: 9.6, tone: "primary" },
+  { top: "80%", left: "50%", size: 5, delay: 1.6, dur: 8.0, tone: "cyan" },
+] as const;
 
 export const Hero = () => {
   const [displayedText, setDisplayedText] = useState(FULL_HEADLINE);
   const [isTyping, setIsTyping] = useState(false);
   const [revealContent, setRevealContent] = useState(true);
   const [revealStats, setRevealStats] = useState(true);
+
+  const prefersReducedMotion = useReducedMotion();
+
+  // Subtle pointer parallax for cinematic depth (GPU transform only, fine pointers).
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+  const springConfig = { stiffness: 60, damping: 18, mass: 0.6 };
+  const smoothX = useSpring(pointerX, springConfig);
+  const smoothY = useSpring(pointerY, springConfig);
+  const glowX = useTransform(smoothX, [-0.5, 0.5], [-16, 16]);
+  const glowY = useTransform(smoothY, [-0.5, 0.5], [-12, 12]);
+  const gridX = useTransform(smoothX, [-0.5, 0.5], [-7, 7]);
+  const gridY = useTransform(smoothY, [-0.5, 0.5], [-5, 5]);
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLElement>) => {
+    if (prefersReducedMotion || event.pointerType !== "mouse") {
+      return;
+    }
+    const rect = event.currentTarget.getBoundingClientRect();
+    pointerX.set((event.clientX - rect.left) / rect.width - 0.5);
+    pointerY.set((event.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const resetPointer = () => {
+    pointerX.set(0);
+    pointerY.set(0);
+  };
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -83,96 +124,64 @@ export const Hero = () => {
   const typedLines = displayedText.split("\n");
 
   return (
-    <section id="home" className="relative overflow-hidden pt-28 md:pt-36 pb-24 md:pb-32">
+    <section
+      id="home"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={resetPointer}
+      className="relative overflow-hidden pt-28 md:pt-36 pb-24 md:pb-32"
+    >
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute inset-0 bg-[linear-gradient(178deg,hsl(232_34%_6%)_0%,hsl(232_30%_5%)_56%,hsl(230_26%_5%)_100%)]" />
-        <motion.div
-          animate={{ rotate: [0, 8, 0, -8, 0], scale: [1, 1.04, 1.01, 1.04, 1] }}
-          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-[32%] left-1/2 w-[1050px] h-[1050px] -translate-x-1/2 rounded-full opacity-[0.2] blur-3xl bg-[conic-gradient(from_180deg_at_50%_50%,hsl(var(--primary)/0.18),hsl(var(--accent-cyan)/0.1),hsl(var(--primary-glow)/0.14),hsl(var(--primary)/0.18))]"
-        />
-        <motion.div
-          animate={{
-            backgroundPosition: ["50% 16%", "52% 20%", "49% 18%", "50% 16%"],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute inset-0 bg-[radial-gradient(52%_46%_at_50%_16%,hsl(var(--primary)/0.2),transparent_72%)]"
-        />
-        <motion.div
-          animate={{
-            opacity: [0.22, 0.34, 0.2, 0.22],
-            x: [0, 20, -12, 0],
-          }}
-          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -inset-x-8 top-20 h-36 bg-[linear-gradient(90deg,transparent,hsl(var(--accent-cyan)/0.16),transparent)] blur-3xl"
-        />
-        <motion.div
-          animate={{ x: ["-8%", "8%", "-8%"], opacity: [0.2, 0.33, 0.2] }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute inset-x-[-14%] bottom-[18%] h-32 bg-[repeating-linear-gradient(100deg,transparent_0%,transparent_12%,hsl(var(--primary)/0.12)_26%,transparent_38%)] blur-2xl"
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(36%_32%_at_78%_28%,hsl(var(--accent-cyan)/0.1),transparent_78%)]" />
-        <div className="absolute inset-0">
-          {AMBIENT_ORBS.map((orb, index) => (
+
+        {/* Depth layer: glows + particles drift gently with the pointer */}
+        <motion.div style={{ x: glowX, y: glowY }} className="absolute inset-0">
+          <motion.div
+            animate={prefersReducedMotion ? undefined : { rotate: [0, 8, 0, -8, 0], scale: [1, 1.04, 1.01, 1.04, 1] }}
+            transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-[32%] left-1/2 -ml-[525px] h-[1050px] w-[1050px] rounded-full opacity-[0.2] blur-3xl bg-[conic-gradient(from_180deg_at_50%_50%,hsl(var(--primary)/0.18),hsl(var(--accent-cyan)/0.1),hsl(var(--primary-glow)/0.14),hsl(var(--primary)/0.18))]"
+          />
+          <motion.div
+            animate={prefersReducedMotion ? undefined : { x: [0, 26, -18, 0], y: [0, 16, -10, 0], opacity: [0.8, 1, 0.8] }}
+            transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute left-[18%] top-[2%] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,hsl(var(--primary)/0.22),transparent_70%)] blur-[90px]"
+          />
+          <motion.div
+            animate={prefersReducedMotion ? undefined : { opacity: [0.22, 0.34, 0.2, 0.22], x: [0, 20, -12, 0] }}
+            transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -inset-x-8 top-20 h-36 bg-[linear-gradient(90deg,transparent,hsl(var(--accent-cyan)/0.16),transparent)] blur-3xl"
+          />
+          <motion.div
+            animate={prefersReducedMotion ? undefined : { x: ["-8%", "8%", "-8%"], opacity: [0.2, 0.33, 0.2] }}
+            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute inset-x-[-14%] bottom-[18%] h-32 bg-[repeating-linear-gradient(100deg,transparent_0%,transparent_12%,hsl(var(--primary)/0.12)_26%,transparent_38%)] blur-2xl"
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(36%_32%_at_78%_28%,hsl(var(--accent-cyan)/0.1),transparent_78%)]" />
+
+          {PARTICLES.map((particle, index) => (
             <motion.span
               key={index}
-              className="absolute rounded-full bg-primary/30 blur-md"
+              className={`absolute rounded-full opacity-20 blur-[1px] ${
+                particle.tone === "cyan" ? "bg-accent-cyan/40" : "bg-primary/40"
+              }`}
               style={{
-                top: orb.top,
-                left: orb.left,
-                width: `${orb.size}px`,
-                height: `${orb.size}px`,
+                top: particle.top,
+                left: particle.left,
+                width: `${particle.size}px`,
+                height: `${particle.size}px`,
               }}
-              animate={{
-                y: [0, -9, 0],
-                opacity: [0.15, 0.34, 0.15],
-              }}
-              transition={{ duration: orb.dur, delay: orb.delay, repeat: Infinity, ease: "easeInOut" }}
+              animate={prefersReducedMotion ? undefined : { y: [0, -10, 0], opacity: [0.12, 0.36, 0.12] }}
+              transition={{ duration: particle.dur, delay: particle.delay, repeat: Infinity, ease: "easeInOut" }}
             />
           ))}
-        </div>
-        <div className="absolute inset-0 grid-bg opacity-[0.055]" />
+        </motion.div>
+
+        <motion.div style={{ x: gridX, y: gridY }} className="absolute inset-0 grid-bg opacity-[0.055]" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-background/70" />
       </div>
 
       <div className="container relative z-10">
         <div className="mx-auto max-w-5xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            whileHover={{ scale: 1.02, y: -1 }}
-            whileTap={{ scale: 0.995 }}
-            className="group relative inline-flex items-center gap-2.5 px-[1.125rem] py-2 rounded-full border border-primary/30 bg-card/65 text-[0.68rem] sm:text-[0.7rem] font-mono tracking-[0.15em] uppercase text-foreground/90 shadow-[0_10px_28px_-18px_hsl(var(--primary)/0.7)] overflow-hidden"
-            style={{ willChange: "transform" }}
-          >
-            <motion.span
-              aria-hidden
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(64%_120%_at_14%_50%,hsl(var(--accent-cyan)/0.18),transparent_70%)]"
-              animate={{ x: ["-6%", "8%", "-6%"], opacity: [0.22, 0.36, 0.22] }}
-              transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.span
-              aria-hidden
-              className="pointer-events-none absolute -inset-y-2 -left-16 w-16 bg-gradient-to-r from-transparent via-white/20 to-transparent blur-[2px]"
-              animate={{ x: [0, 360] }}
-              transition={{ duration: 3.8, repeat: Infinity, repeatDelay: 2.8, ease: "easeInOut" }}
-            />
-            <motion.span
-              className="relative inline-flex w-3 h-3 items-center justify-center"
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <span className="absolute w-1.5 h-1.5 rounded-full bg-accent-cyan shadow-[0_0_16px_hsl(var(--accent-cyan)/0.95)]" />
-              <motion.span
-                aria-hidden
-                className="absolute inset-0 rounded-full border border-accent-cyan/55"
-                animate={{ rotate: [0, 360], opacity: [0.3, 0.65, 0.3] }}
-                transition={{ rotate: { duration: 7, repeat: Infinity, ease: "linear" }, opacity: { duration: 2.8, repeat: Infinity, ease: "easeInOut" } }}
-              />
-            </motion.span>
-            Engineering Clean UI & Scalable Systems
-          </motion.div>
+          <StatusCapsule label="Engineering Clean UI & Scalable Systems" />
 
           <h1 className="mt-8 md:mt-10 mx-auto max-w-[20ch] min-h-[3.05em] font-display text-[clamp(2.3rem,7.2vw,5.2rem)] font-bold leading-[0.98] tracking-[-0.02em] text-foreground">
             {fixedHeadlineLines.map((_, lineIndex) => (
@@ -189,7 +198,7 @@ export const Hero = () => {
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: revealContent ? 1 : 0, y: revealContent ? 0 : 12 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
+            transition={{ duration: 0.55, ease: EASE }}
             className="mt-7 md:mt-8 mx-auto max-w-[66ch] text-base md:text-lg text-foreground/78 leading-relaxed"
           >
             I build production-ready full-stack applications with clean UI, secure authentication, API-driven architecture, scalable backend logic, and polished user experiences designed for real-world use.
@@ -198,7 +207,7 @@ export const Hero = () => {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: revealContent ? 1 : 0, y: revealContent ? 0 : 12 }}
-            transition={{ duration: 0.45, ease: "easeOut", delay: 0.06 }}
+            transition={{ duration: 0.55, ease: EASE, delay: 0.12 }}
             className="mt-9 md:mt-10"
           >
             <div className="flex flex-wrap justify-center items-center gap-3.5">
@@ -232,7 +241,7 @@ export const Hero = () => {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: revealStats ? 1 : 0, y: revealStats ? 0 : 12 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            transition={{ duration: 0.55, ease: EASE }}
             className="mt-11 md:mt-12 max-w-4xl mx-auto"
           >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5 items-start">
@@ -253,7 +262,7 @@ export const Hero = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: revealContent ? 1 : 0, y: revealContent ? 0 : 10 }}
-            transition={{ duration: 0.4, delay: 0.12 }}
+            transition={{ duration: 0.5, ease: EASE, delay: 0.24 }}
             className="mt-9 flex items-center justify-center gap-3"
           >
             <SocialIcon href="https://github.com/Dimson7777" label="GitHub">
