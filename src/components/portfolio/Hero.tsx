@@ -74,6 +74,8 @@ const statItem: Variants = {
 export const Hero = () => {
   const prefersReducedMotion = useReducedMotion();
   const [startCount, setStartCount] = useState(false);
+  const [typedChars, setTypedChars] = useState(prefersReducedMotion ? HEADLINE_LINES.join(" ").length : 0);
+  const [headlineDone, setHeadlineDone] = useState(prefersReducedMotion);
 
   // Subtle pointer parallax for cinematic depth (GPU transform only, fine pointers).
   const pointerX = useMotionValue(0);
@@ -109,6 +111,41 @@ export const Hero = () => {
     const timer = window.setTimeout(() => setStartCount(true), 750);
     return () => window.clearTimeout(timer);
   }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    const fullHeadline = HEADLINE_LINES.join(" ");
+    if (prefersReducedMotion) {
+      setTypedChars(fullHeadline.length);
+      setHeadlineDone(true);
+      return;
+    }
+
+    setTypedChars(0);
+    setHeadlineDone(false);
+
+    let current = 0;
+    const baseDelay = 54;
+
+    const timer = window.setInterval(() => {
+      current += 1;
+      setTypedChars(current);
+
+      if (current >= fullHeadline.length) {
+        window.clearInterval(timer);
+        window.setTimeout(() => setHeadlineDone(true), 200);
+      }
+    }, baseDelay);
+
+    return () => window.clearInterval(timer);
+  }, [prefersReducedMotion]);
+
+  const fullHeadline = HEADLINE_LINES.join(" ");
+  const typedText = fullHeadline.slice(0, typedChars);
+  const lineOneLength = HEADLINE_LINES[0].length;
+  const lineTwoLength = HEADLINE_LINES[1].length;
+  const typedLineOne = typedText.slice(0, lineOneLength);
+  const typedLineTwo = typedText.slice(lineOneLength + 1, lineOneLength + 1 + lineTwoLength);
+  const typedLineThree = typedText.slice(lineOneLength + 1 + lineTwoLength + 1);
 
   return (
     <section
@@ -190,34 +227,25 @@ export const Hero = () => {
             />
           </motion.div>
 
-          <motion.h1
-            variants={lineContainer}
-            className="mt-8 md:mt-10 mx-auto max-w-[20ch] font-display text-[clamp(2.3rem,7.2vw,5.2rem)] font-bold leading-[0.98] tracking-[-0.02em] text-foreground"
-          >
-            {HEADLINE_LINES.map((line, index) => (
+          <h1 className="mt-8 md:mt-10 mx-auto max-w-[20ch] font-display text-[clamp(2.3rem,7.2vw,5.2rem)] font-bold leading-[0.98] tracking-[-0.02em] text-foreground">
+            <span className="block hero-headline-line">{typedLineOne}</span>
+            <span className="block hero-headline-line">
               <motion.span
-                key={line}
-                variants={lineVariants}
-                className="block hero-headline-line"
+                className="inline-block bg-clip-text text-transparent [background-image:linear-gradient(90deg,hsl(214_90%_64%),hsl(190_95%_60%),hsl(196_96%_66%),hsl(190_95%_60%),hsl(214_90%_64%))] [background-size:200%_auto]"
+                style={{ WebkitBackgroundClip: "text" }}
+                animate={prefersReducedMotion ? undefined : { backgroundPosition: ["0% 50%", "-200% 50%"] }}
+                transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
               >
-                {index === GRADIENT_LINE ? (
-                  <motion.span
-                    className="inline-block bg-clip-text text-transparent [background-image:linear-gradient(90deg,hsl(214_90%_64%),hsl(190_95%_60%),hsl(196_96%_66%),hsl(190_95%_60%),hsl(214_90%_64%))] [background-size:200%_auto]"
-                    style={{ WebkitBackgroundClip: "text" }}
-                    animate={prefersReducedMotion ? undefined : { backgroundPosition: ["0% 50%", "-200% 50%"] }}
-                    transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
-                  >
-                    {line}
-                  </motion.span>
-                ) : (
-                  line
-                )}
+                {typedLineTwo}
               </motion.span>
-            ))}
-          </motion.h1>
+            </span>
+            <span className="block hero-headline-line">{typedLineThree}</span>
+          </h1>
 
           <motion.p
-            variants={itemVariants}
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            animate={headlineDone ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6, ease: EASE }}
             className="mt-7 md:mt-8 mx-auto max-w-[66ch] text-base md:text-lg text-foreground/78 leading-relaxed"
           >
             I build production-ready full-stack applications with clean UI, secure authentication, API-driven architecture, scalable backend logic, and polished user experiences designed for real-world use.
