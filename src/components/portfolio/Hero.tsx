@@ -5,15 +5,21 @@ import {
   useReducedMotion,
   useSpring,
   useTransform,
+  type Variants,
 } from "framer-motion";
 import { ArrowRight, ExternalLink, Github, Linkedin, Mail } from "lucide-react";
 import { StatusCapsule } from "@/components/portfolio/StatusCapsule";
 
-const FULL_HEADLINE = "Building production-ready\nfull-stack systems for\nmodern digital products.";
-const TYPE_INTERVAL_MS = 38;
-
 /** Shared premium easing curve for entrance reveals. */
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+const HEADLINE_LINES = [
+  "Building production-ready",
+  "full-stack systems for",
+  "modern digital products.",
+];
+/** Index of the line rendered in the blue/cyan gradient. */
+const GRADIENT_LINE = 1;
 
 const HERO_STATS = [
   { value: 4, suffix: "+", label: "Years Experience" },
@@ -33,13 +39,41 @@ const PARTICLES = [
   { top: "80%", left: "50%", size: 5, delay: 1.6, dur: 8.0, tone: "cyan" },
 ] as const;
 
-export const Hero = () => {
-  const [displayedText, setDisplayedText] = useState(FULL_HEADLINE);
-  const [isTyping, setIsTyping] = useState(false);
-  const [revealContent, setRevealContent] = useState(true);
-  const [revealStats, setRevealStats] = useState(true);
+// --- Entrance orchestration variants -------------------------------------
 
+const containerVariants: Variants = {
+  hidden: {},
+  show: { transition: { delayChildren: 0.1, staggerChildren: 0.12 } },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+};
+
+const lineContainer: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.09 } },
+};
+
+const lineVariants: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+};
+
+const statsContainer: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } },
+};
+
+const statItem: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
+};
+
+export const Hero = () => {
   const prefersReducedMotion = useReducedMotion();
+  const [startCount, setStartCount] = useState(false);
 
   // Subtle pointer parallax for cinematic depth (GPU transform only, fine pointers).
   const pointerX = useMotionValue(0);
@@ -66,62 +100,15 @@ export const Hero = () => {
     pointerY.set(0);
   };
 
+  // Kick off the stats count-up shortly after the cascade reaches them.
   useEffect(() => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (reduceMotion.matches) {
-      setDisplayedText(FULL_HEADLINE);
-      setIsTyping(false);
-      setRevealContent(true);
-      setRevealStats(true);
+    if (prefersReducedMotion) {
+      setStartCount(true);
       return;
     }
-
-    setIsTyping(true);
-    setRevealContent(false);
-    setRevealStats(false);
-    setDisplayedText("");
-
-    let index = 0;
-    let timeoutId = 0;
-
-    const typeNext = () => {
-      index += 1;
-      setDisplayedText(FULL_HEADLINE.slice(0, index));
-
-      if (index >= FULL_HEADLINE.length) {
-        setIsTyping(false);
-        window.setTimeout(() => setRevealContent(true), 130);
-        return;
-      }
-
-      const nextDelay = FULL_HEADLINE[index] === "\n" ? TYPE_INTERVAL_MS + 70 : TYPE_INTERVAL_MS;
-      timeoutId = window.setTimeout(typeNext, nextDelay);
-    };
-
-    timeoutId = window.setTimeout(typeNext, TYPE_INTERVAL_MS);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!revealContent) {
-      setRevealStats(false);
-      return;
-    }
-
-    const timer = window.setTimeout(() => {
-      setRevealStats(true);
-    }, 340);
-
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [revealContent]);
-
-  const fixedHeadlineLines = FULL_HEADLINE.split("\n");
-  const typedLines = displayedText.split("\n");
+    const timer = window.setTimeout(() => setStartCount(true), 750);
+    return () => window.clearTimeout(timer);
+  }, [prefersReducedMotion]);
 
   return (
     <section
@@ -131,32 +118,38 @@ export const Hero = () => {
       className="relative overflow-hidden pt-28 md:pt-36 pb-24 md:pb-32"
     >
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        {/* Base vertical gradient */}
         <div className="absolute inset-0 bg-[linear-gradient(178deg,hsl(232_34%_6%)_0%,hsl(232_30%_5%)_56%,hsl(230_26%_5%)_100%)]" />
 
-        {/* Depth layer: glows + particles drift gently with the pointer */}
+        {/* Depth layer: colored glow orbs + particles drift gently with the pointer */}
         <motion.div style={{ x: glowX, y: glowY }} className="absolute inset-0">
+          {/* Purple orb (top-left) */}
           <motion.div
-            animate={prefersReducedMotion ? undefined : { rotate: [0, 8, 0, -8, 0], scale: [1, 1.04, 1.01, 1.04, 1] }}
+            animate={prefersReducedMotion ? undefined : { x: [0, 24, -14, 0], y: [0, 14, -8, 0], opacity: [0.75, 1, 0.75] }}
             transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-[32%] left-1/2 -ml-[525px] h-[1050px] w-[1050px] rounded-full opacity-[0.2] blur-3xl bg-[conic-gradient(from_180deg_at_50%_50%,hsl(var(--primary)/0.18),hsl(var(--accent-cyan)/0.1),hsl(var(--primary-glow)/0.14),hsl(var(--primary)/0.18))]"
+            className="absolute -top-[12%] left-[2%] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,hsl(258_90%_66%/0.20),transparent_68%)] blur-[110px]"
           />
+          {/* Blue orb (top-right) */}
           <motion.div
-            animate={prefersReducedMotion ? undefined : { x: [0, 26, -18, 0], y: [0, 16, -10, 0], opacity: [0.8, 1, 0.8] }}
-            transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute left-[18%] top-[2%] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,hsl(var(--primary)/0.22),transparent_70%)] blur-[90px]"
+            animate={prefersReducedMotion ? undefined : { x: [0, -22, 16, 0], y: [0, 12, -10, 0], opacity: [0.7, 0.95, 0.7] }}
+            transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-[4%] right-[1%] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,hsl(214_90%_60%/0.18),transparent_70%)] blur-[110px]"
           />
+          {/* Cyan orb (bottom-center) */}
           <motion.div
-            animate={prefersReducedMotion ? undefined : { opacity: [0.22, 0.34, 0.2, 0.22], x: [0, 20, -12, 0] }}
-            transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -inset-x-8 top-20 h-36 bg-[linear-gradient(90deg,transparent,hsl(var(--accent-cyan)/0.16),transparent)] blur-3xl"
+            animate={prefersReducedMotion ? undefined : { x: [0, 18, -16, 0], y: [0, -12, 10, 0], opacity: [0.65, 0.9, 0.65] }}
+            transition={{ duration: 34, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-[0%] left-1/2 -ml-[16rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,hsl(190_95%_55%/0.15),transparent_72%)] blur-[120px]"
           />
-          <motion.div
-            animate={prefersReducedMotion ? undefined : { x: ["-8%", "8%", "-8%"], opacity: [0.2, 0.33, 0.2] }}
-            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute inset-x-[-14%] bottom-[18%] h-32 bg-[repeating-linear-gradient(100deg,transparent_0%,transparent_12%,hsl(var(--primary)/0.12)_26%,transparent_38%)] blur-2xl"
-          />
-          <div className="absolute inset-0 bg-[radial-gradient(36%_32%_at_78%_28%,hsl(var(--accent-cyan)/0.1),transparent_78%)]" />
 
+          {/* Soft horizontal scan band for an engineered, data-driven feel */}
+          <motion.div
+            animate={prefersReducedMotion ? undefined : { opacity: [0.18, 0.3, 0.18], x: [0, 18, -12, 0] }}
+            transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -inset-x-8 top-24 h-32 bg-[linear-gradient(90deg,transparent,hsl(var(--accent-cyan)/0.14),transparent)] blur-3xl"
+          />
+
+          {/* Floating light particles */}
           {PARTICLES.map((particle, index) => (
             <motion.span
               key={index}
@@ -175,94 +168,112 @@ export const Hero = () => {
           ))}
         </motion.div>
 
+        {/* Faint engineering grid with subtle parallax */}
         <motion.div style={{ x: gridX, y: gridY }} className="absolute inset-0 grid-bg opacity-[0.055]" />
+
+        {/* Vignette so the center content pops */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_62%_52%_at_50%_38%,transparent_52%,hsl(230_28%_4%/0.55)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-background/70" />
       </div>
 
       <div className="container relative z-10">
-        <div className="mx-auto max-w-5xl text-center">
-          <StatusCapsule label="Engineering Clean UI & Scalable Systems" />
+        <motion.div
+          variants={containerVariants}
+          initial={prefersReducedMotion ? false : "hidden"}
+          animate="show"
+          className="mx-auto max-w-5xl text-center"
+        >
+          <motion.div variants={itemVariants} className="flex justify-center">
+            <StatusCapsule
+              label="Engineering Clean UI & Scalable Systems"
+              animateOnMount={false}
+            />
+          </motion.div>
 
-          <h1 className="mt-8 md:mt-10 mx-auto max-w-[20ch] min-h-[3.05em] font-display text-[clamp(2.3rem,7.2vw,5.2rem)] font-bold leading-[0.98] tracking-[-0.02em] text-foreground">
-            {fixedHeadlineLines.map((_, lineIndex) => (
-              <span
-                key={lineIndex}
-                className={`block hero-headline-line ${lineIndex === 1 ? "text-gradient-primary" : "text-foreground"}`}
+          <motion.h1
+            variants={lineContainer}
+            className="mt-8 md:mt-10 mx-auto max-w-[20ch] font-display text-[clamp(2.3rem,7.2vw,5.2rem)] font-bold leading-[0.98] tracking-[-0.02em] text-foreground"
+          >
+            {HEADLINE_LINES.map((line, index) => (
+              <motion.span
+                key={line}
+                variants={lineVariants}
+                className="block hero-headline-line"
               >
-                {typedLines[lineIndex] && typedLines[lineIndex].length > 0 ? typedLines[lineIndex] : "\u00A0"}
-              </span>
+                {index === GRADIENT_LINE ? (
+                  <motion.span
+                    className="inline-block bg-clip-text text-transparent [background-image:linear-gradient(90deg,hsl(214_90%_64%),hsl(190_95%_60%),hsl(196_96%_66%),hsl(190_95%_60%),hsl(214_90%_64%))] [background-size:200%_auto]"
+                    style={{ WebkitBackgroundClip: "text" }}
+                    animate={prefersReducedMotion ? undefined : { backgroundPosition: ["0% 50%", "-200% 50%"] }}
+                    transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
+                  >
+                    {line}
+                  </motion.span>
+                ) : (
+                  line
+                )}
+              </motion.span>
             ))}
-            {isTyping && <span className="hero-type-cursor" aria-hidden="true" />}
-          </h1>
+          </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: revealContent ? 1 : 0, y: revealContent ? 0 : 12 }}
-            transition={{ duration: 0.55, ease: EASE }}
+            variants={itemVariants}
             className="mt-7 md:mt-8 mx-auto max-w-[66ch] text-base md:text-lg text-foreground/78 leading-relaxed"
           >
             I build production-ready full-stack applications with clean UI, secure authentication, API-driven architecture, scalable backend logic, and polished user experiences designed for real-world use.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: revealContent ? 1 : 0, y: revealContent ? 0 : 12 }}
-            transition={{ duration: 0.55, ease: EASE, delay: 0.12 }}
-            className="mt-9 md:mt-10"
+            variants={itemVariants}
+            className="mt-9 md:mt-10 flex flex-wrap items-center justify-center gap-3"
           >
-            <div className="flex flex-wrap justify-center items-center gap-3.5">
-              <a
-                href="#projects"
-                className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-gradient-to-r from-primary to-primary-glow text-primary-foreground font-medium text-sm shadow-[0_10px_34px_-12px_hsl(var(--primary)/0.58)] hover:shadow-[0_14px_42px_-10px_hsl(var(--primary)/0.72)] transition-all hover:-translate-y-0.5"
-              >
-                View Projects
-                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-              </a>
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-border bg-card/35 text-foreground font-medium text-sm hover:border-primary/45 hover:bg-card/55 transition-all hover:-translate-y-0.5"
-              >
-                Contact Me
-              </a>
-            </div>
-
-            <div className="mt-3.5 flex justify-center">
-              <a
-                href="/cv.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border/85 text-foreground/92 font-medium text-sm hover:border-primary/40 hover:bg-secondary/45 hover:-translate-y-0.5 transition-all"
-              >
-                <ExternalLink size={16} /> View CV
-              </a>
-            </div>
+            <a
+              href="#projects"
+              className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary-glow px-6 py-3 text-sm font-medium text-primary-foreground shadow-[0_10px_34px_-12px_hsl(var(--primary)/0.58)] transition-all hover:-translate-y-0.5 hover:shadow-[0_14px_42px_-10px_hsl(var(--primary)/0.72)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-0 active:scale-[0.98]"
+            >
+              View Projects
+              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+            </a>
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card/35 px-6 py-3 text-sm font-medium text-foreground transition-all hover:-translate-y-0.5 hover:border-primary/45 hover:bg-card/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-0 active:scale-[0.98]"
+            >
+              Contact Me
+            </a>
+            <a
+              href="/cv.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/20 px-6 py-3 text-sm font-medium text-foreground/90 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card/45 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-0 active:scale-[0.98]"
+            >
+              <ExternalLink size={16} className="opacity-80 transition-opacity group-hover:opacity-100" />
+              View CV
+            </a>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: revealStats ? 1 : 0, y: revealStats ? 0 : 12 }}
-            transition={{ duration: 0.55, ease: EASE }}
-            className="mt-11 md:mt-12 max-w-4xl mx-auto"
+            variants={itemVariants}
+            className="mt-11 md:mt-12 mx-auto max-w-4xl"
           >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5 items-start">
-            {HERO_STATS.map((stat, index) => (
-              <StatMetric
-                key={stat.label}
-                value={stat.value}
-                suffix={stat.suffix}
-                label={stat.label}
-                delay={0.14 + index * 0.12}
-                showDivider={index < HERO_STATS.length - 1}
-                start={revealStats}
-              />
-            ))}
-            </div>
+            <motion.div
+              variants={statsContainer}
+              className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4 md:gap-y-5"
+            >
+              {HERO_STATS.map((stat, index) => (
+                <StatMetric
+                  key={stat.label}
+                  value={stat.value}
+                  suffix={stat.suffix}
+                  label={stat.label}
+                  showDivider={index < HERO_STATS.length - 1}
+                  start={startCount}
+                />
+              ))}
+            </motion.div>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: revealContent ? 1 : 0, y: revealContent ? 0 : 10 }}
-            transition={{ duration: 0.5, ease: EASE, delay: 0.24 }}
+            variants={itemVariants}
             className="mt-9 flex items-center justify-center gap-3"
           >
             <SocialIcon href="https://github.com/Dimson7777" label="GitHub">
@@ -275,7 +286,7 @@ export const Hero = () => {
               <Mail size={18} />
             </SocialIcon>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -285,33 +296,19 @@ const StatMetric = ({
   value,
   suffix,
   label,
-  delay,
   showDivider,
   start,
 }: {
   value: number;
   suffix: string;
   label: string;
-  delay: number;
   showDivider: boolean;
   start: boolean;
 }) => {
   const prefersReducedMotion = useReducedMotion();
-  const [shouldCount, setShouldCount] = useState(false);
-
-  useEffect(() => {
-    if (start) {
-      setShouldCount(true);
-    }
-  }, [start]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: start ? 1 : 0, y: start ? 0 : 14 }}
-      transition={{ duration: 0.45, delay }}
-      className="group relative px-1"
-    >
+    <motion.div variants={statItem} className="group relative px-1">
       {showDivider && (
         <span
           aria-hidden
@@ -327,7 +324,7 @@ const StatMetric = ({
         <div className="relative inline-flex items-baseline overflow-hidden font-display text-[1.85rem] font-bold leading-none text-foreground md:text-[2rem]">
           <span className="relative z-10 inline-flex items-baseline transition-transform duration-300 group-hover:scale-[1.03]">
             <span className="relative">
-              <AnimatedCounter target={value} start={shouldCount} />
+              <AnimatedCounter target={value} start={start} />
               <span aria-hidden className="ml-[0.02em]">{suffix}</span>
             </span>
           </span>
@@ -341,7 +338,7 @@ const StatMetric = ({
             aria-hidden
             className="pointer-events-none absolute inset-0 text-transparent [text-shadow:0_0_18px_rgba(168,85,247,0.22),0_0_26px_rgba(34,211,238,0.16)]"
           >
-            <AnimatedCounter target={value} start={shouldCount} />
+            <AnimatedCounter target={value} start={start} />
             {suffix}
           </span>
         </div>
@@ -352,10 +349,16 @@ const StatMetric = ({
 };
 
 const AnimatedCounter = ({ target, start }: { target: number; start: boolean }) => {
+  const prefersReducedMotion = useReducedMotion();
   const [value, setValue] = useState(0);
 
   useEffect(() => {
     if (!start) {
+      return;
+    }
+
+    if (prefersReducedMotion) {
+      setValue(target);
       return;
     }
 
@@ -382,7 +385,7 @@ const AnimatedCounter = ({ target, start }: { target: number; start: boolean }) 
     return () => {
       window.cancelAnimationFrame(frame);
     };
-  }, [start, target]);
+  }, [start, target, prefersReducedMotion]);
 
   return <>{value}</>;
 };
@@ -393,7 +396,7 @@ const SocialIcon = ({ href, label, children }: { href: string; label: string; ch
     aria-label={label}
     target="_blank"
     rel="noopener noreferrer"
-    className="w-10 h-10 inline-flex items-center justify-center rounded-full border border-border/80 bg-card/40 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:-translate-y-0.5 transition-all"
+    className="w-10 h-10 inline-flex items-center justify-center rounded-full border border-border/80 bg-card/40 text-muted-foreground transition-all hover:text-foreground hover:border-primary/40 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-0 active:scale-95"
   >
     {children}
   </a>
