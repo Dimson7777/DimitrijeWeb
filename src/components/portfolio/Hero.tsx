@@ -22,7 +22,7 @@ const HEADLINE_LINES = [
 const GRADIENT_LINE = 1;
 
 const HERO_STATS = [
-  { value: 4, suffix: "+", label: "Years Experience" },
+  { value: 5, suffix: "+", label: "Years Experience" },
   { value: 30, suffix: "+", label: "Full-Stack Projects" },
   { value: 20, suffix: "+", label: "SaaS Workflows" },
   { value: 100, suffix: "%", label: "Responsive Interfaces" },
