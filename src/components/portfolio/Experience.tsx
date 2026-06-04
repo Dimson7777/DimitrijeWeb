@@ -4,20 +4,20 @@ import { SectionHeading } from "./SectionHeading";
 const roles = [
   {
     company: "TokenFlow",
-    role: "Full Stack Engineer",
-    period: "Jan 2025 — Present",
+    role: "Senior Full Stack Engineer",
+    period: "Jan 2025 - Present",
     description:
       "At TokenFlow, I engineer scalable product architecture across frontend, backend, and database layers, with a strong focus on secure system boundaries, performance, and production-ready delivery.",
     points: [
-      "Designed and implemented a scalable multi-tier architecture using Node.js/Express and PostgreSQL, introducing connection pooling and optimized indexing to support concurrent data streams and 10M+ database rows with sub-second query execution.",
-      "Engineered robust API boundaries, RBAC, and secure token-based authentication workflows, reducing unauthorized access attempts and enhancing data-flow reliability across system boundaries.",
-      "Established rigorous coding standards and automated linting/testing pipelines using Jest and Cypress, ensuring 100% release readiness and predictable code delivery for high-performance platform surfaces.",
+      "High-Throughput Backend Engineering: Designed and deployed a scalable multi-tier architecture using Node.js/Express and PostgreSQL, optimizing database performance through connection pooling and advanced indexing to maintain sub-second latency across massive datasets.",
+      "Enterprise Security & Access Management: Engineered secure API architectures, token-based authentication, and granular permission systems, effectively minimizing unauthorized access vectors and stabilizing end-to-end data pipelines.",
+      "Testing Infrastructure & CI/CD: Established rigorous development standards by implementing automated linting and testing suites (Jest & Cypress), streamlining the deployment pipeline to guarantee predictable and resilient feature releases.",
     ],
   },
   {
     company: "ScaleRoad LLC",
-    role: "Full Stack Engineer",
-    period: "Dec 2023 — Jan 2025",
+    role: "Software Engineer",
+    period: "Dec 2022 - Jan 2025",
     description:
       "At ScaleRoad, I worked on client-facing product systems, improving frontend performance, backend communication, and platform stability across desktop and mobile environments.",
     points: [
@@ -27,9 +27,21 @@ const roles = [
     ],
   },
   {
+    company: "Northstar Technologies",
+    role: "Full Stack Engineer",
+    period: "Sep 2021 - Nov 2022",
+    description:
+      "At Northstar Technologies, I built and maintained full-stack product features, improving platform reliability, API performance, and user experience across web applications.",
+    points: [
+      "Developed and delivered end-to-end full-stack features across frontend interfaces and backend services, enabling faster iteration cycles and stable production releases.",
+      "Improved API throughput and data access performance through query optimization and service-layer refactors, reducing response latency on high-traffic endpoints.",
+      "Collaborated cross-functionally with product and design teams to ship user-focused enhancements while preserving quality through testing and code reviews.",
+    ],
+  },
+  {
     company: "Vertex Digital Studio",
-    role: "Full Stack Engineer (Contract / Remote)",
-    period: "Jan 2023 — Dec 2023",
+    role: "Full Stack Engineer",
+    period: "Mar 2020 - Aug 2021",
     description:
       "At Vertex Digital Studio, I delivered full-stack systems for startup and e-commerce clients, turning business requirements into secure, production-ready web applications.",
     points: [
